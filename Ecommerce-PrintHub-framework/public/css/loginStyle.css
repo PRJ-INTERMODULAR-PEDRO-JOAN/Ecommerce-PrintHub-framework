@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Mismo fondo degradado */
+  background: linear-gradient(135deg, #FF6B00, #007BFF);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Chakra Petch', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+.container {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barra decorativa superior */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(90deg, #FF6B00, #007BFF);
+}
+
+h2 {
+  margin-bottom: 30px;
+  color: #1a1a1a;
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.8rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+label {
+  text-align: left;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #333;
+  margin-top: 15px;
+  font-family: 'Chakra Petch', sans-serif; /* Un toque técnico en los labels */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Inputs */
+input {
+  padding: 12px 15px;
+  margin-bottom: 5px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px; /* Bordes redondeados */
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s ease;
+  background-color: #f9f9f9;
+}
+
+input:focus {
+  outline: none;
+  border-color: #007BFF;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.1);
+}
+
+/* Input Readonly (cuando editas usuario) */
+input[readonly] {
+  background-color: #e8eff5;
+  color: #6c757d;
+  border-color: #d0dbe8;
+  cursor: not-allowed;
+  font-family: 'Roboto Mono', monospace; /* Estilo técnico para el ID bloqueado */
+}
+
+/* Botón Principal - Estilo "boton-cta-primario" */
+button {
+  margin-top: 30px;
+  padding: 14px;
+  background: linear-gradient(90deg, #007BFF, #1f8bff); /* Azul para registro/guardar */
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+}
+
+button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
+}
+
+/* Mensajes */
+.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #dc3545;
+  font-size: 0.9rem;
+}
+
+.success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  border-left: 4px solid #28a745;
+  font-size: 0.9rem;
+}
+
+/* Texto inferior y enlaces */
+p {
+  margin-top: 25px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+a {
+  color: #FF6B00; /* Naranja corporativo */
+  text-decoration: none;
+  font-weight: 700;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: #e05e00;
+  text-decoration: underline;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Ajuste para pantallas pequeñas */
+@media (max-width: 480px) {
+  .container {
+    padding: 25px;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+}
+
+

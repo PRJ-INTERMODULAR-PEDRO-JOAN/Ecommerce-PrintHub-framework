@@ -1,0 +1,227 @@
+/* ================================ IMPORTACIÓN DE FUENTES ================================ */
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@700&display=swap');
+
+/* ================================ RESET Y CONFIGURACIÓN GLOBAL ================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Chakra Petch', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #FF6B00, #007BFF);
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+/* ================================ FORMULARIO DE CONTACTO ================================ */
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  min-height: 100vh;
+}
+
+.contact-section {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+  animation: fadeInUp 0.8s ease;
+}
+
+.contact-section h1 {
+  text-align: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  color: #007BFF;
+  text-transform: uppercase;
+}
+
+.contact-section .subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* ================================ CAMPOS ================================ */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  color: #333;
+}
+
+form input[type="text"],
+form input[type="email"],
+form textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background-color: #fafafa;
+}
+
+form input:focus,
+form textarea:focus {
+  border-color: #007BFF;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.25);
+}
+
+form textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+/* ================================ CHECKBOX ================================ */
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  margin-top: 1.2rem;
+  gap: 0.6rem;
+}
+
+.checkbox-container input[type="checkbox"] {
+  transform: scale(1.2);
+  cursor: pointer;
+  margin-top: 2px;
+}
+
+.checkbox-container label {
+  font-size: 0.95rem;
+  color: #444;
+  line-height: 1.4;
+}
+
+.checkbox-container a {
+  color: #007BFF;.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #FF6B00, #007BFF);
+}
+
+.contact-section {
+  background: #fff;
+  border-radius: 20px;
+  padding: 40px 50px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  max-width: 700px;
+  width: 100%;
+  animation: fadeInUp 0.8s ease;
+}
+
+.contact-section h1 {
+  text-align: center;
+  font-family: 'Chakra Petch', sans-serif;
+  font-size: 2.4rem;
+  margin-bottom: 10px;
+  color: #007BFF;
+  text-transform: uppercase;
+}
+
+.contact-section .subtitle {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+/* ================================ CAMPOS ================================ */
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+  text-decoration: none;
+}
+
+.checkbox-container a:hover {
+  text-decoration: underline;
+}
+
+/* ================================ BOTÓN ENVIAR ================================ */
+form .btn {
+  margin-top: 2rem;
+  background: linear-gradient(90deg, #FF6B00, #ff8c42);
+  color: white;
+  border: none;
+  padding: 0.9rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+}
+
+form .btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+}
+
+/* ================================ MENSAJES ================================ */
+#formMessage {
+  margin-top: 1.5rem;
+  font-weight: bold;
+  min-height: 1.4rem;
+  text-align: center;
+  font-size: 1rem;
+}
+
+#formMessage.error {
+  color: #d63031;
+}
+
+#formMessage.success {
+  color: #27ae60;
+}
+
+
+/* ================================ ANIMACIONES ================================ */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================ RESPONSIVE ================================ */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 60px 20px;
+  }
+  .contact-section {
+    padding: 30px 20px;
+  }
+}
