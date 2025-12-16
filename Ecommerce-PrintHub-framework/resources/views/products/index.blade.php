@@ -1,63 +1,58 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Nuestros Productos') }}
-        </h2>
-    </x-slot>
+    <a href="#" class="enlace-banner">
+        <div class="banner">
+          <div class="banner-texto">
+            ¡Oferta especial de Navidad! 🦌🎅 Solo por tiempo limitado.
+          </div>
+        </div>
+    </a>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
-            @if(session('success'))
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                    <span class="block sm:inline">{{ session('success') }}</span>
+    <section class="hero" style="background: url('{{ asset("img/fondoPrincipio.jpg") }}') no-repeat center center/cover;">
+        <div class="container h-100">
+            <div class="row h-100 hero-fila">
+                <div class="col-12 hero-contenido">
+                    <h1>Nuestros <span class="resaltado">Productos</span></h1>
+                    <p>Calidad e innovación en cada impresión</p>
                 </div>
-            @endif
-
-            <div class="mb-6 bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-medium text-gray-900 mb-4">Importar Productos</h3>
-                <form action="{{ route('products.import') }}" method="POST" enctype="multipart/form-data" class="flex gap-4 items-end">
-                    @csrf
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900" for="file_input">Subir archivo (CSV, XLSX)</label>
-                        <input name="file" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="file_input" type="file">
-                    </div>
-                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5">Importar</button>
-                </form>
             </div>
+        </div>
+    </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+    <section id="destacados" class="productos-destacados">
+        <div class="container">
+            <h1>Catálogo Completo</h1>
+            
+            <div class="contenedor-productos">
                 @forelse($products as $product)
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                        <div class="h-48 w-full bg-gray-200 flex items-center justify-center overflow-hidden">
-                            @if($product->image)
-                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="object-cover h-full w-full">
-                            @else
-                                <span class="text-gray-400">Sin imagen</span>
-                            @endif
-                        </div>
-                        
-                        <div class="p-6">
-                            <h3 class="font-bold text-xl mb-2">{{ $product->name }}</h3>
-                            <p class="text-gray-700 text-base mb-4 truncate">
-                                {{ $product->description }}
+                    <div class="tarjeta-producto">
+                        @if($product->image)
+                            <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset($product->image) }}" alt="{{ $product->name }}" />
+                        @else
+                            <img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Sin imagen" />
+                        @endif
+
+                        <div class="info-producto">
+                            <h3>{{ $product->name }}</h3>
+                            <p class="descripcion descripcion-estilo">
+                                {{ Str::limit($product->description, 50) }}
                             </p>
-                            <div class="flex items-center justify-between">
-                                <span class="text-gray-900 font-bold text-xl">{{ $product->price }}€</span>
-                                <button class="bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600 text-sm">Ver más</button>
+                            <div class="precio-accion">
+                                <span class="precio">{{ $product->price }}€</span>
+                                <button class="boton-comprar">Comprar</button>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-4 text-center py-12 text-gray-500">
-                        No hay productos disponibles. ¡Importa algunos para empezar!
+                    <div style="grid-column: '1 / -1'; text-align:center; padding: 2rem;">
+                        <h3>No hay productos disponibles</h3>
+                        <p>Intenta importar productos o añadirlos a la base de datos.</p>
                     </div>
                 @endforelse
             </div>
 
-            <div class="mt-6">
+            <div class="d-flex justify-content-center mt-5">
                 {{ $products->links() }}
             </div>
         </div>
-    </div>
+    </section>
 </x-app-layout>
