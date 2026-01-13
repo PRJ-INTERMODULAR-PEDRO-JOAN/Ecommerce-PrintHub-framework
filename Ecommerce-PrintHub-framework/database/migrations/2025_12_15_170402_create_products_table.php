@@ -6,27 +6,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up()
-{
-    Schema::create('products', function (Blueprint $table) {
-        $table->id();
-        $table->string('sku')->unique();
-        $table->string('name'); // 'nom' al teu legacy
-        $table->text('description')->nullable(); // 'descripcio'
-        $table->string('image')->nullable(); // 'img'
-        $table->decimal('price', 8, 2); // 'preu'
-        $table->integer('stock'); // 'estoc'
-        $table->string('category')->nullable(); // Per filtrar (ponts, vehicles, etc.)
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('sku')->unique(); // Identificador únic
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->decimal('price', 8, 2);
+            $table->integer('stock')->default(0);
+            $table->string('image')->nullable(); // URL o path de la imatge
+            $table->string('category')->nullable();
+            $table->timestamps();
+        });
+    }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');

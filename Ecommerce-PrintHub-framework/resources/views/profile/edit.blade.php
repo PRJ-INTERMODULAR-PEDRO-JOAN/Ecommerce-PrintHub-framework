@@ -1,29 +1,33 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.legacy')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-profile-information-form')
-                </div>
-            </div>
+@section('title', 'El meu Perfil')
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.update-password-form')
-                </div>
-            </div>
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/perfilStyle.css') }}">
+@endpush
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('profile.partials.delete-user-form')
-                </div>
-            </div>
-        </div>
+@section('content')
+<div class="profile-container">
+    <h2>El meu Perfil</h2>
+    
+    <div class="profile-card">
+        <h3>Informació de l'usuari</h3>
+        <p><strong>Nom:</strong> {{ $user->name }}</p>
+        <p><strong>Email:</strong> {{ $user->email }}</p>
+        
+        <h3>Actualitzar Perfil</h3>
+        <form method="post" action="{{ route('profile.update') }}" class="profile-form">
+            @csrf
+            @method('patch')
+            
+            <label for="name">Nom</label>
+            <input type="text" name="name" value="{{ old('name', $user->name) }}" required>
+            
+            <label for="email">Email</label>
+            <input type="email" name="email" value="{{ old('email', $user->email) }}" required>
+            
+            <button type="submit">Guardar Canvis</button>
+        </form>
     </div>
-</x-app-layout>
+</div>
+@endsection

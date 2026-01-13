@@ -1,6 +1,12 @@
 <?php
-use App\Http\Controllers\ProductController;
-use Illuminate\Support\Facades\Route;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+
+Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// Endpoint API públic per obtenir productes (per al futur Vue o JS actual)
 Route::get('/products', [ProductController::class, 'apiIndex']);
-Route::post('/products/{id}/comments', [ProductController::class, 'storeComment']);
