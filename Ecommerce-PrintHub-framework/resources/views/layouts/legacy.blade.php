@@ -6,7 +6,7 @@
     <title>PrintHub - @yield('title')</title>
     
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.8-dist/css/bootstrap.min.css') }}">
-    
+    <link rel="stylesheet" href="{{ asset('css/galeriaStyle.css') }}">
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/footer.css') }}">
     <link rel="stylesheet" href="{{ asset('css/aside.css') }}">
@@ -20,7 +20,7 @@
 <aside class="barra-lateral">
     <div class="barra-lateral-cabecera">
         <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
-        <div class="logo"><img src="public/logoPrintHub.jpeg" alt="Logo de PrintHub" /></div>
+        <div class="logo"><img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo de PrintHub" /></div>
     </div>
     <ul class="iconos-utilidad">
         <li><a href="#" aria-label="Carrito">🛒</a></li>
@@ -56,14 +56,14 @@
             <div class="pie-pagina-izquierda">
                 <h2 class="logo">Print<span class="resaltado">Hub</span></h2><br />
                 <div>
-                  <a class="iconos-sociales" href="#"><img src="public/facebook.svg" alt="Facebook"/></a>
-                  <a class="iconos-sociales" href="#"><img src="public/linkedin.svg" alt="LinkedIn"/></a>
-                  <a class="iconos-sociales" href="#"><img src="public/youtube.svg" alt="YouTube"/></a>
-                  <a class="iconos-sociales" href="#"><img src="public/insta.svg" alt="Instagram"/></a>
+                  <a class="iconos-sociales" href="#"><img src="img/facebook.svg" alt="Facebook"/></a>
+                  <a class="iconos-sociales" href="#"><img src="img/linkedin.svg" alt="LinkedIn"/></a>
+                  <a class="iconos-sociales" href="#"><img src="img/youtube.svg" alt="YouTube"/></a>
+                  <a class="iconos-sociales" href="#"><img src="img/insta.svg" alt="Instagram"/></a>
                 </div>
             </div>
             <div class="pie-pagina-centro">
-                <img src="public/fotterImage.jpg" alt="Imagen global 3D" />
+                <img src="img/fotterImage.jpg" alt="Imagen global 3D" />
             </div>
             <div class="pie-pagina-derecha">
                 <div class="servicios">

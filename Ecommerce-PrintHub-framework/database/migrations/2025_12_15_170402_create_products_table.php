@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('sku')->unique(); // Identificador únic
-            $table->string('name');
+            $table->string('sku')->unique(); // Ej: FIG-LNK-01
+            $table->string('name');          // Ej: Figura Link (Zelda)
             $table->text('description')->nullable();
-            $table->decimal('price', 8, 2);
+            $table->decimal('price', 10, 2);
             $table->integer('stock')->default(0);
-            $table->string('image')->nullable(); // URL o path de la imatge
+            $table->string('image')->nullable(); // Ej: FiguraLink.jpg
             $table->string('category')->nullable();
             $table->timestamps();
         });

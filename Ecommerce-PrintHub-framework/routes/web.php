@@ -9,6 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
+Route::get('/', [ProductController::class, 'index'])->name('home');
 // Rutas Públicas de Productos
 Route::get('/productes', [ProductController::class, 'index'])->name('products.index');
 Route::get('/productes/{id}', [ProductController::class, 'show'])->name('products.show');
