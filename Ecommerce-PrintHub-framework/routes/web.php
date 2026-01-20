@@ -4,6 +4,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ProductImportController;
 
 // 1. PÁGINA DE INICIO (Catálogo)
 Route::get('/', [ProductController::class, 'index'])->name('home');
@@ -31,5 +32,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('admin.import');
 });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/import', [ProductImportController::class, 'show'])->name('admin.import');
+    Route::post('/admin/import', [ProductImportController::class, 'store'])->name('admin.import.store');
+});
 // Rutas de autenticación (Login, Register, Logout)
 require __DIR__.'/auth.php';
