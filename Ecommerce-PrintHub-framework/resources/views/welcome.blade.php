@@ -85,11 +85,36 @@
       <section class="video">
         <div class="container">
             <div class="video-wrapper">
-                <h2 class="text-white">Descubre Más Sobre PrintHub</h2>
+                <h2 class="text-black">Descubre Más Sobre PrintHub</h2>
                 <div class="video-contenedor">
                     <video autoplay loop muted playsinline class="img-fluid">
                         <source src="{{ asset('img/Presentacion_Clientes.mp4') }}" type="video/mp4" />
                     </video>
+                </div>
+            </div>
+        </div>
+      </section>
+      <section class="seccion-testimonios">
+        <div class="container">
+            <h2>Qué dicen nuestros clientes</h2>
+            <div class="row g-4 contenedor-testimonios">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="tarjeta-testimonio h-100">
+                        <p class="cita-testimonio">"¡Increíble! Pedí una maqueta de mi coche soñado y el nivel de detalle es espectacular. 100% recomendado."</p>
+                        <span class="autor-testimonio">- Carlos G.</span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="tarjeta-testimonio h-100">
+                        <p class="cita-testimonio">"El servicio de diseño personalizado es genial. Captaron mi idea a la primera y la figura de Aatrox quedó perfecta."</p>
+                        <span class="autor-testimonio">- Laura M.</span>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="tarjeta-testimonio h-100">
+                        <p class="cita-testimonio">"Compré mi primera impresora 3D aquí y el soporte fue excelente. Muy contenta con la Ender 3."</p>
+                        <span class="autor-testimonio">- Javier R.</span>
+                    </div>
                 </div>
             </div>
         </div>

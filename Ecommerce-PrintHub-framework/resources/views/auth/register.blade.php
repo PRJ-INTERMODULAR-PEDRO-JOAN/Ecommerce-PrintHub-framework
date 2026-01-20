@@ -1,70 +1,52 @@
 @extends('layouts.guest_custom')
 
 @section('content')
-<main class="register-container">
-    <div class="register-card">
+<div class="card shadow border-0 rounded-4" style="max-width: 500px; width: 100%;">
+    <div class="card-body p-4">
         
-        <div class="register-header text-center mb-4">
-            <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo" class="register-logo rounded-circle mb-3" style="width: 70px;">
-            </a>
-            <h2>Crear Compte</h2>
-            <p class="text-muted">Uneix-te a la comunitat maker</p>
+        <div class="text-center mb-4">
+            <h4 class="fw-bold text-dark">Crear Cuenta</h4>
+            <p class="text-muted small">Únete a la comunidad PrintHub</p>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger p-2 small">
-                <ul class="mb-0 ps-3">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form method="POST" action="{{ route('register') }}" class="register-form">
+        <form method="POST" action="{{ route('register') }}">
             @csrf
 
-            <div class="row g-2">
-                <div class="col-md-6 mb-3">
-                    <label for="name" class="form-label">Nom</label>
-                    <input type="text" id="name" name="name" class="form-control" value="{{ old('name') }}" required autofocus>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <input type="text" name="name" class="form-control bg-light border-0" placeholder="Nombre" required>
                 </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="surname" class="form-label">Cognoms</label>
-                    <input type="text" id="surname" name="surname" class="form-control" value="{{ old('surname') }}">
-                </div>
-            </div>
-
-            <div class="row g-2">
-                <div class="col-md-6 mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required>
-                </div>
-
-                <div class="col-md-6 mb-3">
-                    <label for="phone" class="form-label">Telèfon</label>
-                    <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone') }}">
+                <div class="col-6">
+                    <input type="text" name="surname" class="form-control bg-light border-0" placeholder="Apellidos">
                 </div>
             </div>
 
             <div class="mb-3">
-                <label for="password" class="form-label">Contrasenya</label>
-                <input type="password" id="password" name="password" class="form-control" required>
+                <input type="email" name="email" class="form-control bg-light border-0" placeholder="tucorreo@email.com" required>
+            </div>
+            
+            <div class="mb-3">
+                <input type="tel" name="phone" class="form-control bg-light border-0" placeholder="Teléfono (Opcional)">
             </div>
 
-            <div class="mb-4">
-                <label for="password_confirmation" class="form-label">Confirmar Contrasenya</label>
-                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
+            <div class="row g-2 mb-4">
+                <div class="col-6">
+                    <input type="password" name="password" class="form-control bg-light border-0" placeholder="Contraseña" required>
+                </div>
+                <div class="col-6">
+                    <input type="password" name="password_confirmation" class="form-control bg-light border-0" placeholder="Confirmar" required>
+                </div>
             </div>
 
-            <button type="submit" class="btn btn-primary w-100 py-2">Registrar-se</button>
+            <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-3 shadow-sm">
+                REGISTRARSE
+            </button>
 
             <div class="text-center mt-3">
-                <p>Ja tens compte? <a href="{{ route('login') }}">Inicia sessió</a></p>
+                <span class="small text-muted">¿Ya tienes cuenta?</span>
+                <a href="{{ route('login') }}" class="small fw-bold text-primary text-decoration-none">Entrar</a>
             </div>
         </form>
     </div>
-</main>
+</div>
 @endsection
