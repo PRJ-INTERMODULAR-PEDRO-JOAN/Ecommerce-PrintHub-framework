@@ -67,6 +67,21 @@
         </div>
       </section>
 
+      <section class="seccion-sobre-nosotros">
+        <div class="container">
+            <div class="row gy-4 sobre-nosotros-fila">
+                <div class="col-12 col-md-12 col-lg-5 gif-sobre-nosotros">
+                    <img src="{{ asset('img/impresora.gif') }}" alt="GIF representativo de PrintHub" class="img-fluid" />
+                </div>
+                <div class="col-12 col-md-12 col-lg-7 texto-sobre-nosotros">
+                    <h2>Sobre Nosotros</h2>
+                    <p>En PrintHub, nos especializamos en la creación de maquetas personalizadas utilizando tecnología de impresión 3D de última generación...</p>
+                    <p>Ya sea que busques una figura de tu videojuego favorito, una maqueta arquitectónica o un modelo de automóvil...</p>
+                </div>
+            </div>
+        </div>
+      </section>
+
       <section class="video">
         <div class="container">
             <div class="video-wrapper">
