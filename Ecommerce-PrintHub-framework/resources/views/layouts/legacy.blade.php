@@ -24,7 +24,35 @@
     </div>
     <ul class="iconos-utilidad">
         <li><a href="#" aria-label="Carrito">🛒</a></li>
-        <li><a href="auth/profile.php" aria-label="Iniciar Sesión">👤</a></li>
+        @auth
+                        
+
+                        <li class="nav-item dropdown ms-3">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ route('dashboard') }}">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="{{ route('profile.edit') }}">Editar Datos</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger">Cerrar Sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @else
+                        <li class="nav-item ms-2">
+                            <a class="nav-link btn btn-outline-light px-3" href="{{ route('login') }}">
+                                👤
+                            </a>
+                        </li>
+                    @endauth
+                </ul>
+            </div>
+        </div>
     </ul>
     <h3 class="etiqueta-menu">Menú</h3>
     <nav>
@@ -42,7 +70,15 @@
             <li><a href="src/galeria.html">Galería de Proyectos</a></li>
             <li><a href="#impresoras">Impresoras 3D</a></li>
             <li><a href="php/contact.php">Formulario Contacto</a></li>
-            <li><a href="/importar">Importar Información</a></li>
+             @auth
+            @if(Auth::user()->role === 'admin')
+                            <li>
+                                <a href="{{ route('admin.import') }}">
+                                    Importar Productos
+                                </a>
+                            </li>
+                        @endif
+            @endauth
         </ul>
     </nav>
 </aside>

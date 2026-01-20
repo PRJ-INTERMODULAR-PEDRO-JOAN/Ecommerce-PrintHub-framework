@@ -4,31 +4,33 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // Usuario Administrador (usando tus campos)
-        User::factory()->create([
+        // 1. Usuario ADMIN (El que tenías en users.json)
+        User::create([
             'name' => 'Admin',
             'surname' => 'PrintHub',
             'email' => 'admin@printhub.com',
-            'phone' => '600123456',
+            'phone' => '666777888',
             'role' => 'admin',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'), // Contraseña segura
         ]);
 
-        // Usuario de prueba (ejemplo del json 'Mec')
-        User::factory()->create([
+        // 2. Usuario CLIENTE (Ejemplo 'Mec' del json antiguo)
+        User::create([
             'name' => 'Mec',
-            'surname' => 'User',
-            'email' => 'mec@example.com',
+            'surname' => 'Cliente',
+            'email' => 'mec@printhub.com',
+            'phone' => '600123456',
             'role' => 'user',
-            'password' => bcrypt('password'),
+            'password' => Hash::make('password'), // Contraseña segura
         ]);
 
-        // Cargar productos
+        // 3. Cargamos los productos (Lambo, impresoras, etc.)
         $this->call(ProductSeeder::class);
     }
 }

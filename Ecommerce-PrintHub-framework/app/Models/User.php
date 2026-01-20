@@ -12,10 +12,10 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
-        'surname',
+        'surname', // Tu campo personalizado
         'email',
-        'phone',
-        'role',
+        'phone',   // Tu campo personalizado
+        'role',    // Tu campo personalizado
         'password',
     ];
 
