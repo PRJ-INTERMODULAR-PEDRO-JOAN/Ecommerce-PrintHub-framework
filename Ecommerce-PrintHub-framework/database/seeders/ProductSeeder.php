@@ -40,6 +40,16 @@ class ProductSeeder extends Seeder
             'image' => 'prusa.jpg'
         ]);
 
+        Product::create([
+            'sku' => 'IMP-ELEGO',
+            'name' => 'Elegoo Saturn 3',
+            'description' => 'Impresora 3D de resina 12k con alta resolución y detalles precisos.',
+            'price' => 399.00,
+            'stock' => 7,
+            'category' => 'Impresoras',
+            'image' => 'elego.jpg'
+        ]);
+
         // 3. DESTACADOS (Figuras, Maquetas, Coches...)
         Product::create([
             'sku' => 'FIG-LAMBO',
