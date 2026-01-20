@@ -88,7 +88,7 @@
                 <h2 class="text-black">Descubre Más Sobre PrintHub</h2>
                 <div class="video-contenedor">
                     <video autoplay loop muted playsinline class="img-fluid">
-                        <source src="{{ asset('img/Presentacion_Clientes.mp4') }}" type="video/mp4" />
+                        <source src="{{ asset('img/Presentacion_Clientes_sin_con.mp4') }}" type="video/mp4" />
                     </video>
                 </div>
             </div>
