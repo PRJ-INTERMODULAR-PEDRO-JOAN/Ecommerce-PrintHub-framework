@@ -2,20 +2,23 @@
 
 namespace App\Models;
 
+// 1. AÑADE ESTA LÍNEA
+use Laravel\Sanctum\HasApiTokens; 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    // 2. AÑADE HasApiTokens AQUÍ DENTRO
+    use HasApiTokens, HasFactory, Notifiable; 
 
     protected $fillable = [
         'name',
-        'surname', // Tu campo personalizado
+        'surname',
         'email',
-        'phone',   // Tu campo personalizado
-        'role',    // Tu campo personalizado
+        'phone',
+        'role',
         'password',
     ];
 
