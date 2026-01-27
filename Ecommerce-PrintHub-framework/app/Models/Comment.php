@@ -11,13 +11,13 @@ class Comment extends Model
 
     protected $fillable = ['user_id', 'product_id', 'text', 'rating'];
 
-    // Relación con el Usuario
+    // Relación: Un comentario pertenece a un Usuario
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relación con el Producto
+    // Relación: Un comentario pertenece a un Producto
     public function product()
     {
         return $this->belongsTo(Product::class);

@@ -16,14 +16,29 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 2. LISTADO DE PRODUCTOS (Público - Para el futuro SPA)
+// 2. PRODUCTOS
+// A) Listado completo (ya lo tenías)
 Route::get('/products', function () {
     return response()->json(Product::all(), 200);
 });
 
-// 3. RUTAS DE COMENTARIOS (C6 - Preparación)
-// Obtener comentarios de un producto
+// B) Obtener un solo producto por ID (NUEVO) 🔍
+Route::get('/products/{id}', function ($id) {
+    // Buscamos el producto
+    $product = Product::find($id);
+
+    // Si existe, lo devolvemos
+    if ($product) {
+        return response()->json($product, 200);
+    }
+
+    // Si no existe, devolvemos error 404
+    return response()->json(['mensaje' => 'Producto no encontrado'], 404);
+});
+
+// 3. COMENTARIOS
+// Ver comentarios de un producto
 Route::get('/products/{id}/comments', [CommentController::class, 'index']);
 
-// Publicar comentario (Protegido - Requiere token)
+// Publicar comentario (Protegido)
 Route::middleware('auth:sanctum')->post('/products/{id}/comments', [CommentController::class, 'store']);

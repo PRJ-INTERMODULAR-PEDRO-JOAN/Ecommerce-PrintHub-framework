@@ -15,7 +15,13 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'image',
         'category',
+        'image',
     ];
+
+    // Relación: Un producto tiene muchos comentarios
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
