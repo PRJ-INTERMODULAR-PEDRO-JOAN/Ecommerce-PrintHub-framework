@@ -4,7 +4,6 @@
 
 @section('content')
 <main class="contenido-principal">
-
     <a href="#destacados" class="enlace-banner" style="display:block;">
         <div class="banner">
           <div class="banner-texto">
@@ -50,7 +49,7 @@
                     </span>
 
                     <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary w-100 mt-2">
-                        👁️ Ver Detalles y Opinar
+                        Ver Detalles y Opinar
                     </a>
 
                 </div>
