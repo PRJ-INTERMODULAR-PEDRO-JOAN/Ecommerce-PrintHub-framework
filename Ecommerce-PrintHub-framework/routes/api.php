@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
 use App\Http\Controllers\Api\CommentController;
+use App\Http\Controllers\Api\LikeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,3 +43,8 @@ Route::get('/products/{id}/comments', [CommentController::class, 'index']);
 
 // Publicar comentario (Protegido)
 Route::middleware('auth:sanctum')->post('/products/{id}/comments', [CommentController::class, 'store']);
+
+Route::get('/products/{id}/like', [LikeController::class, 'check']);
+
+// Dar/Quitar like (Protegido)
+Route::middleware('auth:sanctum')->post('/products/{id}/like', [LikeController::class, 'toggle']);

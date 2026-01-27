@@ -49,7 +49,9 @@
                         {{ number_format($product->price, 2) }} €
                     </span>
 
-                    
+                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-primary w-100 mt-2">
+                        👁️ Ver Detalles y Opinar
+                    </a>
 
                 </div>
             @endforeach
@@ -82,7 +84,9 @@
                         {{ number_format($impresora->price, 2) }} €
                     </span>
 
-                    
+                    <a href="{{ route('products.show', $impresora->id) }}" class="btn btn-primary w-100 mt-2">
+                        👁️ Ver Detalles y Opinar
+                    </a>
 
                 </div>
             @endforeach

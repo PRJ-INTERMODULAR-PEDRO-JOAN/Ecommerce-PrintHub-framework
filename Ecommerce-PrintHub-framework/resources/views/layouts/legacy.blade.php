@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrintHub - @yield('title')</title>
     
     <link rel="stylesheet" href="{{ asset('bootstrap-5.3.8-dist/css/bootstrap.min.css') }}">
@@ -93,14 +93,14 @@
             <div class="pie-pagina-izquierda">
                 <h2 class="logo">Print<span class="resaltado">Hub</span></h2><br />
                 <div>
-                  <a class="iconos-sociales" href="#"><img src="img/facebook.svg" alt="Facebook"/></a>
-                  <a class="iconos-sociales" href="#"><img src="img/linkedin.svg" alt="LinkedIn"/></a>
-                  <a class="iconos-sociales" href="#"><img src="img/youtube.svg" alt="YouTube"/></a>
-                  <a class="iconos-sociales" href="#"><img src="img/insta.svg" alt="Instagram"/></a>
+                  <a class="iconos-sociales" href="#"><img src="{{ asset('img/facebook.svg') }}" alt="Facebook"/></a>
+                  <a class="iconos-sociales" href="#"><img src="{{ asset('img/linkedin.svg') }}" alt="LinkedIn"/></a>
+                  <a class="iconos-sociales" href="#"><img src="{{ asset('img/youtube.svg') }}" alt="YouTube"/></a>
+                  <a class="iconos-sociales" href="#"><img src="{{ asset('img/insta.svg') }}" alt="Instagram"/></a>
                 </div>
             </div>
             <div class="pie-pagina-centro">
-                <img src="img/fotterImage.jpg" alt="Imagen global 3D" />
+                <img src="{{ asset('img/fotterImage.jpg') }}" alt="Imagen Global 3D" />
             </div>
             <div class="pie-pagina-derecha">
                 <div class="servicios">

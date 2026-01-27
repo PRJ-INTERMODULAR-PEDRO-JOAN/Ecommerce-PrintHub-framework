@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 // --- RUTES PÚBLICAS ---
 Route::get('/', [ProductController::class, 'index'])->name('home');
 Route::get('/products', [ProductController::class, 'list'])->name('products.index'); // <--- NUEVA
+Route::get('/productes/{id}', [ProductController::class, 'show'])->name('products.show'); // <--- NOVA
 
 // --- DASHBOARD ---
 Route::get('/dashboard', function () {
