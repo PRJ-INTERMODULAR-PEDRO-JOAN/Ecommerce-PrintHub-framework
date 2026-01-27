@@ -26,46 +26,70 @@
       </section>
 
       <section id="destacados" class="productos-destacados pt-5">
-        <div class="container">
-            <h1>Productos Destacados</h1>
-            <div id="contenedor-productos" class="contenedor-productos">
-                @foreach($destacados as $product)
-                    <div class="card producto-card">
-                        <img src="{{ asset('img/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ $product->name }}</h5>
-                            <p class="card-text text-truncate">{{ $product->description }}</p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="precio">{{ $product->price }} €</span>
-                                <button class="btn btn-primary btn-sm">Ver detalles</button>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-      </section>
+    <div class="container">
+        <h1>Productos Destacados</h1>
 
-      <section id="impresoras" class="impresoras-section">
-        <div class="container">
-            <h1 class="impresoras-titulo">Nuestras Impresoras 3D</h1>
-            <div id="contenedor-impresoras" class="contenedor-productos">
-                @foreach($impresoras as $impresora)
-                    <div class="card producto-card">
-                        <img src="{{ asset('img/' . $impresora->image) }}" class="card-img-top" alt="{{ $impresora->name }}">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">{{ $impresora->name }}</h5>
-                            <p class="card-text text-truncate">{{ $impresora->description }}</p>
-                            <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="precio">{{ $impresora->price }} €</span>
-                                <button class="btn btn-primary btn-sm w-100">Comprar</button>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+        <div id="contenedor-productos" class="contenedor-productos">
+            @foreach($destacados as $product)
+                <div class="tarjeta-producto">
+
+                    <img
+                        src="{{ asset('img/' . $product->image) }}"
+                        alt="{{ $product->name }}"
+                        onerror="this.src='{{ asset('marcaDeAgua.png') }}'"
+                    >
+
+                    <h3>{{ $product->name }}</h3>
+
+                    <p class="producto-descripcion">
+                        {{ $product->description }}
+                    </p>
+
+                    <span class="producto-precio">
+                        {{ number_format($product->price, 2) }} €
+                    </span>
+
+                    
+
+                </div>
+            @endforeach
         </div>
-      </section>
+    </div>
+</section>
+
+
+     <section id="impresoras" class="impresoras-section">
+    <div class="container">
+        <h1 class="impresoras-titulo">Nuestras Impresoras 3D</h1>
+
+        <div id="contenedor-impresoras" class="contenedor-productos">
+            @foreach($impresoras as $impresora)
+                <div class="tarjeta-producto">
+
+                    <img
+                        src="{{ asset('img/' . $impresora->image) }}"
+                        alt="{{ $impresora->name }}"
+                        onerror="this.src='{{ asset('marcaDeAgua.png') }}'"
+                    >
+
+                    <h3>{{ $impresora->name }}</h3>
+
+                    <p class="producto-descripcion">
+                        {{ $impresora->description }}
+                    </p>
+
+                    <span class="producto-precio">
+                        {{ number_format($impresora->price, 2) }} €
+                    </span>
+
+                    
+
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
 
       <section class="seccion-sobre-nosotros">
         <div class="container">

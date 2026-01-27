@@ -66,6 +66,7 @@
                     <li><a href="#">Automóviles</a></li>
                 </ul>
             </li>
+            <li><a href="{{ route('products.index') }}">Todos Nuestros Productos</a></li>
             <li><a href="#como-funciona">Diseñar Maquetas</a></li>
             <li><a href="src/galeria.html">Galería de Proyectos</a></li>
             <li><a href="#impresoras">Impresoras 3D</a></li>

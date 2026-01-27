@@ -1,34 +1,44 @@
 @extends('layouts.legacy')
 
-@section('title', 'Galeria')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/galeriaStyle.css') }}">
-@endpush
+@section('title', 'Catálogo Completo')
 
 @section('content')
-    <h1 class="titulo-galeria">La Nostra Col·lecció</h1>
+<main class="contenido-principal" style="padding-top: 120px; min-height: 100vh;">
+    
+    <div class="container">
+        <div class="text-center mb-5">
+            <h1 class="display-4 fw-bold">Nuestro Catálogo</h1>
+            <p class="lead text-muted">Explora todos nuestros productos e impresoras</p>
+        </div>
 
-    <div class="gallery-container">
-        @forelse($products as $product)
-            <div class="card">
-                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="card-img">
-                
-                <div class="card-body">
+        <div id="contenedor-productos" class="contenedor-productos">
+            @foreach($products as $product)
+
+                <div class="tarjeta-producto">
+
+                    <img
+                        src="{{ asset('img/' . $product->image) }}"
+                        alt="{{ $product->name }}"
+                        onerror="this.src='{{ asset('marcaDeAgua.png') }}'"
+                    >
+
                     <h3>{{ $product->name }}</h3>
-                    <p class="price">{{ number_format($product->price, 2) }} €</p>
-                    
-                    <a href="{{ route('products.show', $product->id) }}" class="btn-buy">
-                        Veure Detalls
-                    </a>
-                </div>
-            </div>
-        @empty
-            <p style="text-align: center; width: 100%;">No hi ha productes disponibles.</p>
-        @endforelse
-    </div>
-@endsection
 
-@push('scripts')
-    <script src="{{ asset('js/galeria.js') }}"></script>
-@endpush
+                    <p class="producto-descripcion">
+                        {{ $product->description }}
+                    </p>
+
+                    <span class="producto-precio">
+                        {{ number_format($product->price, 2) }} €
+                    </span>
+
+                    
+
+                </div>
+            @endforeach
+        </div>
+    </div>
+    <br>
+
+</main>
+@endsection

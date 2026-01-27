@@ -9,20 +9,15 @@ class Comment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'product_id',
-        'text',
-        'rating',
-    ];
+    protected $fillable = ['user_id', 'product_id', 'text', 'rating'];
 
-    // Relación: Un comentario pertenece a un usuario
+    // Relación con el Usuario
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relación: Un comentario pertenece a un producto
+    // Relación con el Producto
     public function product()
     {
         return $this->belongsTo(Product::class);

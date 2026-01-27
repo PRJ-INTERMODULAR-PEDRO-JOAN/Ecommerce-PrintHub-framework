@@ -57,3 +57,13 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## API REST y Futuro Client SPA
+
+Se ha implementado una API REST inicial para alimentar la futura aplicación SPA (Single Page Application) hecha con Vue.js.
+
+- **GET /api/products**: Devuelve el listado completo de productos en JSON.
+- **GET /api/products/{id}/comments**: Devuelve las reseñas de un producto.
+- **POST /api/products/{id}/comments**: Permite a un usuario autenticado publicar una reseña.
+
+En el siguiente sprint (C6), conectaremos esta API con el frontend de Vue.js para separar la lógica de visualización del backend.
