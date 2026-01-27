@@ -12,39 +12,33 @@ use App\Http\Controllers\Api\LikeController;
 |--------------------------------------------------------------------------
 */
 
-// 1. OBTENER USUARIO ACTUAL (Protegido)
+// 1. OBTENER USUARIO ACTUAL
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 2. PRODUCTOS
-// A) Listado completo (ya lo tenías)
+// 2. PRODUCTOS (Público)
 Route::get('/products', function () {
     return response()->json(Product::all(), 200);
 });
 
-// B) Obtener un solo producto por ID (NUEVO) 🔍
 Route::get('/products/{id}', function ($id) {
-    // Buscamos el producto
     $product = Product::find($id);
-
-    // Si existe, lo devolvemos
-    if ($product) {
-        return response()->json($product, 200);
-    }
-
-    // Si no existe, devolvemos error 404
-    return response()->json(['mensaje' => 'Producto no encontrado'], 404);
+    return $product ? response()->json($product) : response()->json(['mensaje' => 'No encontrado'], 404);
 });
 
-// 3. COMENTARIOS
-// Ver comentarios de un producto
+// 3. COMENTARIOS Y LIKES
+// Ver comentarios y estado del like (Público)
 Route::get('/products/{id}/comments', [CommentController::class, 'index']);
-
-// Publicar comentario (Protegido)
-Route::middleware('auth:sanctum')->post('/products/{id}/comments', [CommentController::class, 'store']);
-
 Route::get('/products/{id}/like', [LikeController::class, 'check']);
 
-// Dar/Quitar like (Protegido)
-Route::middleware('auth:sanctum')->post('/products/{id}/like', [LikeController::class, 'toggle']);
+// Rutas protegidas (Requieren Login)
+Route::middleware('auth:sanctum')->group(function () {
+    // Comentarios
+    Route::post('/products/{id}/comments', [CommentController::class, 'store']);   // Crear
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);       // Editar (Nuevo)
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);   // Borrar (Nuevo)
+
+    // Likes
+    Route::post('/products/{id}/like', [LikeController::class, 'toggle']);
+});
