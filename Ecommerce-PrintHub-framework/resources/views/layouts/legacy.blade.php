@@ -68,14 +68,14 @@
             <li class="desplegable">
                 <a href="#">Maquetas Personalizadas ▾</a>
                 <ul class="contenido-desplegable">
-                    <li><a href="#">Videojuegos</a></li>
+                    <li><a href="">Videojuegos</a></li>
                     <li><a href="#">Arquitectura</a></li>
                     <li><a href="#">Automóviles</a></li>
                 </ul>
             </li>
             <li><a href="{{ route('products.list') }}">Todos Nuestros Productos</a></li>
             <li><a href="#como-funciona">Diseñar Maquetas</a></li>
-            <li><a href="{{ asset('src/galeria.html') }}">Galería de Proyectos</a></li>
+            <li><a href="{{ route('gallery.index') }}">Galería de Proyectos</a></li>
             <li><a href="#impresoras">Impresoras 3D</a></li>
             <li><a href="{{ asset('php/contact.php') }}">Formulario Contacto</a></li>
              @auth

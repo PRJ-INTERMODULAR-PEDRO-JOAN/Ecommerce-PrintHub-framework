@@ -4,10 +4,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProductImportController;
 use App\Http\Controllers\CartController; // <--- Importante
+use App\Http\Controllers\GalleryController;
 use Illuminate\Support\Facades\Route;
+
 
 // --- RUTAS PÚBLICAS ---
 Route::get('/', [ProductController::class, 'index'])->name('home');
+Route::get('/galeria', [GalleryController::class, 'index'])->name('gallery.index');
 Route::get('/productes', [ProductController::class, 'list'])->name('products.list');
 Route::get('/productes/{id}', [ProductController::class, 'show'])->name('products.show');
 
