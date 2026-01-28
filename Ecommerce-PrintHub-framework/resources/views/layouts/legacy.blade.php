@@ -136,5 +136,78 @@
     <script src="{{ asset('js/script.js') }}"></script>
     <script src="{{ asset('js/barra-lateral.js') }}"></script>
     @stack('scripts')
+
+    <button id="open-chat-btn" onclick="toggleChat()" style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 60px;
+        height: 60px;
+        background-color: #000000;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        cursor: pointer;
+        z-index: 999999;
+        font-size: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+    ">
+        💬
+    </button>
+
+    <div id="chat-container" style="
+        display: none;
+        position: fixed;
+        bottom: 90px;
+        right: 20px;
+        width: 350px;
+        height: 500px;
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        z-index: 999999;
+        overflow: hidden;
+        flex-direction: column;
+        border: 1px solid #ccc;
+    ">
+        <div style="
+            background-color: #000000;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+        ">
+            <span>Asistente PrintHub 🤖</span>
+            <span onclick="toggleChat()" style="cursor: pointer; font-size: 20px;">&times;</span>
+        </div>
+        <iframe 
+            src="https://chatkitopenai-u5gv.vercel.app/" 
+            style="width: 100%; height: 100%; border: none;"
+            title="Chatbot PrintHub">
+        </iframe>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const chatContainer = document.getElementById('chat-container');
+            const chatBtn = document.getElementById('open-chat-btn');
+
+            if (chatContainer.style.display === 'none' || chatContainer.style.display === '') {
+                chatContainer.style.display = 'flex';
+                chatBtn.innerHTML = '❌'; 
+                chatBtn.style.transform = 'rotate(90deg)';
+            } else {
+                chatContainer.style.display = 'none';
+                chatBtn.innerHTML = '💬'; 
+                chatBtn.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
 </body>
-</html> 
+</html>
