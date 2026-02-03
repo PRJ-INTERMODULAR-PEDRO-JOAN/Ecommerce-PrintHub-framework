@@ -1,69 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sprint 3: Creació del projecte Laravel i API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aquest document resumeix l'arquitectura, rutes i decisions tècniques implementades durant el Sprint 3 per a la migració del projecte a Laravel.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## C1 – Configuració de l'Entorn
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+S'ha inicialitzat el projecte Laravel dins del directori `laravel/`.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Base de Dades:** Configuració de l'arxiu `.env` per connectar a la mateixa instància MySQL utilitzada pel projecte legacy.
+- **Docker:** S'ha integrat l'entorn de contenidors _(Indicar aquí l'opció escollida: "utilitzant el docker-compose existent del landing" o "mitjançant Laravel Sail dins del directori del projecte")_.
 
-## Learning Laravel
+**Fitxers clau:**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- `laravel/.env`
+- `laravel/config/database.php`
+- `docker-compose.yml`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## C2 – Model de Dades i Migracions
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+S'ha traslladat l'esquema de dades a MySQL mitjançant migracions de Laravel.
 
-### Premium Partners
+### Taula `products`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Camps implementats:
 
-## Contributing
+- `id` (PK)
+- `sku` (String, Índex únic)
+- `name` (String)
+- `description` (Text)
+- `price` (Decimal/Float)
+- `stock` (Integer)
+- `image` (String)
+- `category` (String)
+- `timestamps` (`created_at`, `updated_at`)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Taula `users`
 
-## Code of Conduct
+S'ha utilitzat la migració estàndard de Laravel (`users`), compatible amb els usuaris existents.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Dades de prova (Seeding):**
+S'ha creat `ProductSeeder` per poblar la taula de productes amb dades inicials per a desenvolupament.
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## C3 – Autenticació (Laravel Breeze)
 
-## License
+S'ha implementat **Laravel Breeze** (versió Blade) per gestionar el flux d'autenticació complet.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Rutes d'Autenticació
 
-## API REST y Futuro Client SPA
+| Mètode | URI         | Descripció                             |
+| :----- | :---------- | :------------------------------------- |
+| GET    | `/register` | Vista del formulari de registre.       |
+| POST   | `/register` | Acció de registrar un nou usuari.      |
+| GET    | `/login`    | Vista del formulari d'inici de sessió. |
+| POST   | `/login`    | Acció d'autenticar l'usuari.           |
+| POST   | `/logout`   | Tancar sessió.                         |
 
-Se ha implementado una API REST inicial para alimentar la futura aplicación SPA (Single Page Application) hecha con Vue.js.
+> **Nota Comparativa (Sprint 2 vs Sprint 3):**
+> En el Sprint 2, l'autenticació es gestionava manualment mitjançant `$_SESSION` de PHP i cookies pròpies. En aquest Sprint, Breeze utilitza el sistema de **Middleware** i **Guards** de Laravel, oferint una gestió automàtica de sessions segures, protecció CSRF i hashing de contrasenyes, simplificant el manteniment i augmentant la seguretat.
 
-- **GET /api/products**: Devuelve el listado completo de productos en JSON.
-- **GET /api/products/{id}/comments**: Devuelve las reseñas de un producto.
-- **POST /api/products/{id}/comments**: Permite a un usuario autenticado publicar una reseña.
+---
 
-En el siguiente sprint (C6), conectaremos esta API con el frontend de Vue.js para separar la lógica de visualización del backend.
+## C4 – Importació d'Excel
+
+S'ha desenvolupat un mecanisme per importar productes massivament des d'un fitxer Excel.
+
+- **Implementació:** _(Indicar si és via "Command" o "Controlador web")_.
+- **Lògica:** El sistema llegeix l'arxiu, valida les dades (camps obligatoris com `sku`, `price`, `stock` i formats numèrics) i insereix o actualitza els registres a la BBDD.
+- **Logs:** Es genera un resum de l'operació (línies processades i errors trobats).
+
+**Fitxers clau:** `laravel/app/Imports/` o `laravel/app/Console/Commands/`.
+
+---
+
+## C5 – Vistes i API
+
+S'ha creat la interfície visual per al llistat de productes i s'ha exposat la primera versió de l'API.
+
+### Rutes Web (`routes/web.php`)
+
+| Mètode | URI          | Descripció                                                                                          |
+| :----- | :----------- | :-------------------------------------------------------------------------------------------------- |
+| GET    | `/productes` | Llistat públic de productes. Utilitza una vista Blade amb estils heretats/adaptats del front antic. |
+
+### Rutes API (`routes/api.php`)
+
+Endpoints JSON preparats per al futur client SPA (Vue).
+
+| Mètode | URI             | Descripció                                              |
+| :----- | :-------------- | :------------------------------------------------------ |
+| GET    | `/api/products` | Retorna el llistat complet de productes en format JSON. |
+| GET    | `/api/comments` | (Opcional) Llistat de comentaris.                       |
+| POST   | `/api/comments` | Emmagatzemar un nou comentari/valoració.                |
+
+---
+
+## C6 – Validacions i Comentaris (Client-Side)
+
+S'ha integrat lògica JavaScript al frontend per gestionar la interactivitat abans de l'arribada de la SPA.
+
+- **Comentaris/Valoracions:** S'ha afegit un formulari a la vista de productes que envia les dades a l'API mitjançant `Fetch` o `AJAX`.
+- **Validacions:**
+    - **Auth:** Gestionada per Breeze al servidor.
+    - **Formularis:** JavaScript valida al client que els camps obligatoris tinguin contingut i que el rating estigui dins del rang permès abans d'enviar la petició.
+
+---
+
+## C7 – Testing
+
+S'han creat proves automatitzades (`Feature Tests`) per assegurar la qualitat de l'API.
+
+**Tests realitzats:**
+
+1. **API Productes:** Verificació que l'endpoint `/api/products` retorna codi 200 i l'estructura de dades esperada.
+2. **Comentaris:**
+    - Test d'inserció correcta (validant bases de dades).
+    - Test de validació (intentar enviar sense camps obligatoris).
+3. **Importació:** Verificació bàsica del procés de càrrega d'Excel.
+
+**Ubicació:** `laravel/tests/Feature/`
