@@ -6,7 +6,15 @@
 <main class="contenido-principal" style="min-height: 100vh;">
     
     <div class="container">
-        <a href="{{ route('home') }}" class="btn btn-outline-secondary mb-4">&larr; Volver</a>
+        {{-- Mensaje de éxito al editar --}}
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                <strong>✅ ¡Hecho!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        <a href="{{ route('home') }}" class="btn btn-outline-secondary mb-4 mt-4">&larr; Volver</a>
 
         <div class="card shadow-lg border-0 mb-5 overflow-hidden">
             <div class="row g-0">
@@ -19,14 +27,14 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h1 class="display-5 fw-bold mb-2">{{ $product->name }}</h1>
-                                <p class="text-muted mb-3">Ref: {{ $product->sku }}</p>
+                                <p class="text-muted mb-3">Ref: {{ $product->sku ?? 'N/A' }}</p>
                             </div>
                             <div class="text-end">
                                 <div class="fs-4 text-warning fw-bold" id="avg-rating-display">
-                                    {{ $product->rating }} ⭐
+                                    {{ $product->rating ?? 0 }} ⭐
                                 </div>
                                 <small class="text-muted" id="total-reviews-display">
-                                    {{ $product->reviews_count }} opiniones
+                                    {{ $product->reviews_count ?? 0 }} opiniones
                                 </small>
                             </div>
                         </div>
@@ -34,7 +42,7 @@
                         <p class="lead mb-4">{{ $product->description }}</p>
                         <h2 class="text-primary fw-bold mb-4">{{ $product->price }} €</h2>
 
-                        <div class="d-flex align-items-center gap-3 mb-4">
+                        <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
                             <button id="btn-like" class="btn btn-outline-danger btn-lg rounded-pill px-4" onclick="toggleLike()">
                                 <span id="heart-icon">🤍</span> 
                                 <span id="likes-count">0</span> Likes
@@ -43,7 +51,15 @@
                             <a href="{{ route('cart.add', $product->id) }}" class="btn btn-success btn-lg px-5 rounded-pill shadow">
                                 Añadir al Carrito 🛒
                             </a>
-                        </div>
+
+                            @auth
+                                @if(Auth::user()->role === 'admin')
+                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-lg rounded-pill shadow fw-bold border border-dark">
+                                        ✏️ Editar
+                                    </a>
+                                @endif
+                            @endauth
+                            </div>
                     </div>
                 </div>
             </div>
@@ -181,7 +197,7 @@
         } catch (e) { console.error(e); }
     }
 
-    // --- FUNCIONES DE EDICIÓN ---
+    // --- FUNCIONES DE EDICIÓN COMENTARIOS ---
     window.enableEditMode = function(id, text, rating) {
         document.getElementById(`view-mode-${id}`).style.display = 'none';
         document.getElementById(`edit-mode-${id}`).style.display = 'block';

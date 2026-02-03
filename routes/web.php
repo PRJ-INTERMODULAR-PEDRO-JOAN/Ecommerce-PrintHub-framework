@@ -22,7 +22,7 @@ Route::get('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.r
 // --- RUTAS PROTEGIDAS (Requieren Login) ---
 Route::middleware(['auth'])->group(function () {
     
-    // Checkout y Pago (Solo usuarios registrados)
+    // Checkout y Pago
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     Route::post('/checkout', [CartController::class, 'processPayment'])->name('cart.process');
 
@@ -39,6 +39,10 @@ Route::middleware(['auth'])->group(function () {
     // Admin Import
     Route::get('/admin/import', [ProductImportController::class, 'show'])->name('admin.import');
     Route::post('/admin/import', [ProductImportController::class, 'store'])->name('admin.import.store');
+
+    // --- NUEVAS RUTAS DE EDICIÓN (SOLO ADMIN) ---
+    Route::get('/productes/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/productes/{id}', [ProductController::class, 'update'])->name('products.update');
 });
 
 require __DIR__.'/auth.php';
