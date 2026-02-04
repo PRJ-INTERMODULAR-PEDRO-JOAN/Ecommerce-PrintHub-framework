@@ -10,38 +10,46 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
-        'sku', 'name', 'description', 'price', 'stock', 'category', 'image',
+        'name',
+        'description',
+        'price',
+        'stock',
+        'image',
+        'category',
+        'sku',
+        'rating',
+        'reviews_count'
     ];
 
-    // Relación con Comentarios
+    // Relaciones existentes
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
-    // Relación con Likes
     public function likes()
     {
         return $this->hasMany(Like::class);
     }
 
-    // Función para saber si un usuario le dio like
-    public function isLikedBy($user)
+    // --- NUEVA FUNCIÓN: OFERTA FLASH DEL DÍA ---
+    public static function getDailyDeal()
     {
-        if (!$user) return false;
-        return $this->likes->where('user_id', $user->id)->isNotEmpty();
-    }
+        // 1. Solo productos con stock
+        $productIds = self::where('stock', '>', 0)->pluck('id')->toArray();
 
-    // --- NUEVO: Calcular la media de estrellas ---
-    public function getRatingAttribute()
-    {
-        // Redondeamos a 1 decimal (ej: 4.5)
-        return round($this->comments()->avg('rating'), 1) ?? 0;
-    }
+        if (empty($productIds)) {
+            return null; 
+        }
 
-    // --- NUEVO: Contar valoraciones ---
-    public function getReviewsCountAttribute()
-    {
-        return $this->comments()->count();
+        // 2. Semilla basada en la fecha (AñoMesDia)
+        // Esto garantiza que el random sea EL MISMO para todos durante 24h
+        mt_srand(date('Ymd')); 
+        
+        // 3. Elegimos uno al azar
+        $randomIndex = mt_rand(0, count($productIds) - 1);
+        
+        // 4. Devolvemos el producto
+        return self::find($productIds[$randomIndex]);
     }
-}   
+}

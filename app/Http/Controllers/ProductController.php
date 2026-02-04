@@ -4,84 +4,93 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    // Página principal (Welcome)
     public function index()
     {
-        $impresoras = Product::where('category', 'Impresoras')->get();
-        $destacados = Product::where('category', '!=', 'Impresoras')
-                             ->where('sku', '!=', 'FIG-CREEPER')->get();
-        return view('welcome', compact('impresoras', 'destacados'));
+        // Obtenemos destacados e impresoras
+        $destacados = Product::where('category', '!=', 'Impresoras')->take(4)->get();
+        $impresoras = Product::where('category', 'Impresoras')->take(4)->get();
+
+        // ✅ NUEVO: Obtenemos la oferta del día
+        $ofertaDia = Product::getDailyDeal();
+
+        return view('welcome', compact('destacados', 'impresoras', 'ofertaDia'));
     }
 
-    public function edit($id)
+    // Listado completo (Catálogo)
+    public function list(Request $request)
     {
-        // Validación de Rol
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'ACCESO DENEGADO: Solo administradores.');
+        $query = Product::query();
+
+        // Filtro por categoría
+        if ($request->has('category') && $request->category != '') {
+            $query->where('category', $request->category);
         }
 
+        // Filtro por precio
+        if ($request->has('price_min') && $request->price_min != '') {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if ($request->has('price_max') && $request->price_max != '') {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        $products = $query->get();
+        return view('products.index', compact('products'));
+    }
+
+    // Ver detalle de producto
+    public function show($id)
+    {
+        $product = Product::with(['comments.user', 'likes'])->findOrFail($id);
+        return view('products.show', compact('product'));
+    }
+
+    // Editar producto (Admin)
+    public function edit($id)
+    {
+        if (auth()->user()->role !== 'admin') {
+            return redirect('/')->with('error', 'No tienes permiso.');
+        }
         $product = Product::findOrFail($id);
         return view('products.edit', compact('product'));
     }
 
-    /**
-     * Actualiza el producto en la BBDD (Solo Admin).
-     */
+    // Actualizar producto (Admin)
     public function update(Request $request, $id)
     {
-        // Validación de Rol
         if (auth()->user()->role !== 'admin') {
-            abort(403, 'ACCESO DENEGADO.');
+            abort(403);
         }
 
-        $product = Product::findOrFail($id);
-
-        // Validar datos
         $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|max:2048' // Imagen opcional
+            'name' => 'required',
+            'description' => 'required',
+            'price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // Actualizar campos
-        $product->name = $request->name;
-        $product->description = $request->description;
-        $product->price = $request->price;
-        $product->stock = $request->stock;
+        $product = Product::findOrFail($id);
+        $data = $request->all();
 
-        // Gestión de Imagen (si suben una nueva)
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = time() . '_' . $file->getClientOriginalName();
+            // Borrar imagen vieja si no es una de las default
+            if ($product->image && !in_array($product->image, ['default.jpg', 'test.jpg'])) {
+                 // Storage::delete('public/img/' . $product->image); (Ajustar según tu sistema de archivos)
+            }
             
-            // Guardar en public/img
-            $file->move(public_path('img'), $filename);
-            
-            // Actualizar ruta en BD
-            $product->image = $filename;
+            $imageName = time().'.'.$request->image->extension();  
+            $request->image->move(public_path('img'), $imageName);
+            $data['image'] = $imageName;
         }
 
-        $product->save();
+        $product->update($data);
 
-        return redirect()->route('products.show', $product->id)
-                         ->with('success', '¡Producto actualizado correctamente!');
-    }
-
-
-    public function list()
-    {
-        $products = Product::all();
-        return view('products.index', compact('products'));
-    }
-
-    // NOU: Veure detall d'un producte
-    public function show($id)
-    {
-        $product = Product::findOrFail($id);
-        return view('products.show', compact('product'));
+        return redirect()->route('products.show', $product->id)->with('success', 'Producto actualizado correctamente');
     }
 }

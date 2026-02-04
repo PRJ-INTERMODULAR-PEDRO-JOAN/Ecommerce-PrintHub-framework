@@ -6,10 +6,10 @@
 <main class="contenido-principal" style="min-height: 100vh;">
     
     <div class="container">
-        {{-- Mensaje de éxito al editar --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                <strong>✅ ¡Hecho!</strong> {{ session('success') }}
+        
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                <strong>🚫 Error:</strong> {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -18,7 +18,15 @@
 
         <div class="card shadow-lg border-0 mb-5 overflow-hidden">
             <div class="row g-0">
-                <div class="col-md-6 bg-white d-flex align-items-center justify-content-center p-4">
+                <div class="col-md-6 bg-white d-flex align-items-center justify-content-center p-4 position-relative">
+                    
+                    {{-- ETIQUETA DE AGOTADO EN LA IMAGEN --}}
+                    @if($product->stock <= 0)
+                        <div class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center" style="background: rgba(255,255,255,0.7); z-index: 10;">
+                            <span class="badge bg-danger fs-1 shadow rotate-badge" style="transform: rotate(-15deg); padding: 20px 40px; border: 4px solid white;">AGOTADO</span>
+                        </div>
+                    @endif
+
                     <img src="{{ asset('img/' . $product->image) }}" class="img-fluid rounded" alt="{{ $product->name }}" style="max-height: 400px; object-fit: contain;">
                 </div>
                 
@@ -40,7 +48,19 @@
                         </div>
                         
                         <p class="lead mb-4">{{ $product->description }}</p>
-                        <h2 class="text-primary fw-bold mb-4">{{ $product->price }} €</h2>
+                        
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <h2 class="text-primary fw-bold mb-0">{{ $product->price }} €</h2>
+                            
+                            {{-- INFORMACIÓN DE STOCK --}}
+                            @if($product->stock > 5)
+                                <span class="badge bg-success">En Stock ({{ $product->stock }})</span>
+                            @elseif($product->stock > 0)
+                                <span class="badge bg-warning text-dark">¡Últimas unidades! ({{ $product->stock }})</span>
+                            @else
+                                <span class="badge bg-secondary">Sin Stock</span>
+                            @endif
+                        </div>
 
                         <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
                             <button id="btn-like" class="btn btn-outline-danger btn-lg rounded-pill px-4" onclick="toggleLike()">
@@ -48,9 +68,16 @@
                                 <span id="likes-count">0</span> Likes
                             </button>
                             
-                            <a href="{{ route('cart.add', $product->id) }}" class="btn btn-success btn-lg px-5 rounded-pill shadow">
-                                Añadir al Carrito 🛒
-                            </a>
+                            {{-- BOTÓN DE COMPRA: LOGICA DE ESTADO --}}
+                            @if($product->stock > 0)
+                                <a href="{{ route('cart.add', $product->id) }}" class="btn btn-success btn-lg px-5 rounded-pill shadow">
+                                    Añadir al Carrito 🛒
+                                </a>
+                            @else
+                                <button class="btn btn-secondary btn-lg px-5 rounded-pill shadow" disabled style="cursor: not-allowed; opacity: 0.6;">
+                                    🚫 AGOTADO
+                                </button>
+                            @endif
 
                             @auth
                                 @if(Auth::user()->role === 'admin')
@@ -59,12 +86,13 @@
                                     </a>
                                 @endif
                             @endauth
-                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        {{-- SECCIÓN DE COMENTARIOS (Sin cambios) --}}
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="bg-white p-5 rounded shadow-sm">

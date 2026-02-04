@@ -77,7 +77,7 @@
             <li><a href="#como-funciona">Diseñar Maquetas</a></li>
             <li><a href="{{ route('gallery.index') }}">Galería de Proyectos</a></li>
             <li><a href="#impresoras">Impresoras 3D</a></li>
-            <li><a href="{{ asset('php/contact.php') }}">Formulario Contacto</a></li>
+            <li><a href="{{ route('contact.index') }}">Formulario Contacto</a></li>
              @auth
                 @if(Auth::user()->role === 'admin')
                     <li>

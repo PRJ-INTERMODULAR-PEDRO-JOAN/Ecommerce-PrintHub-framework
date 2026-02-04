@@ -7,10 +7,10 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
-    // Ver el carrito
     public function index()
     {
         $cart = session()->get('cart', []);
@@ -19,7 +19,7 @@ class CartController extends Controller
         return view('cart.index', compact('cart', 'total'));
     }
 
-    // Añadir producto
+    // ✅ FUNCIÓN MODIFICADA: Aplica el 50% si es oferta
     public function add($id)
     {
         if (!Auth::check()) {
@@ -27,25 +27,48 @@ class CartController extends Controller
         }
 
         $product = Product::findOrFail($id);
+
+        if ($product->stock <= 0) {
+            return redirect()->back()->with('error', '¡Lo sentimos! Este producto está agotado.');
+        }
+
         $cart = session()->get('cart', []);
+        $currentQty = isset($cart[$id]) ? $cart[$id]['quantity'] : 0;
+        
+        if (($currentQty + 1) > $product->stock) {
+            return redirect()->back()->with('error', 'No puedes añadir más unidades. ¡No queda suficiente stock!');
+        }
+
+        // --- LÓGICA DE DESCUENTO ---
+        $finalPrice = $product->price;
+        $dailyDeal = Product::getDailyDeal();
+        $isDeal = ($dailyDeal && $dailyDeal->id == $product->id);
+
+        if ($isDeal) {
+            $finalPrice = $product->price / 2; // 50% OFF
+        }
 
         if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
             $cart[$id] = [
                 "id" => $product->id,
-                "name" => $product->name,
+                "name" => $product->name . ($isDeal ? ' (🔥 OFERTA)' : ''),
                 "quantity" => 1,
-                "price" => $product->price,
+                "price" => $finalPrice,
                 "image" => $product->image
             ];
         }
 
         session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Producto añadido correctamente ✅');
+
+        $msg = $isDeal 
+            ? '¡Ofertón añadido! Has conseguido un 50% de descuento 🔥' 
+            : 'Producto añadido correctamente ✅';
+
+        return redirect()->back()->with('success', $msg);
     }
 
-    // Eliminar producto
     public function remove($id)
     {
         $cart = session()->get('cart', []);
@@ -56,7 +79,6 @@ class CartController extends Controller
         return redirect()->back()->with('success', 'Producto eliminado');
     }
 
-    // Pantalla de Checkout (Carga la vista con los pasos)
     public function checkout()
     {
         if (!Auth::check()) return redirect()->route('login');
@@ -70,12 +92,10 @@ class CartController extends Controller
         return view('cart.checkout', compact('cart', 'total'));
     }
 
-    // PROCESAR PAGO REAL
     public function processPayment(Request $request)
     {
         if (!Auth::check()) return redirect()->route('login');
 
-        // Validamos todos los campos separados
         $request->validate([
             'street' => 'required|string|min:5',
             'city' => 'required|string|min:2',
@@ -85,36 +105,52 @@ class CartController extends Controller
         ]);
 
         $cart = session()->get('cart', []);
-        
-        // Recalcular total
         $total = 0;
         foreach($cart as $item) $total += $item['price'] * $item['quantity'];
 
-        // 1. UNIR DIRECCIÓN: Juntamos las celdas en un solo string para la BD
-        $fullAddress = $request->street . ', ' . $request->city . ' (' . $request->zip . ') - ' . $request->country;
+        DB::beginTransaction();
 
-        // 2. CREAR PEDIDO
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'total_price' => $total,
-            'status' => 'pagado',
-            'shipping_address' => $fullAddress,
-            'payment_method' => 'tarjeta'
-        ]);
+        try {
+            foreach($cart as $id => $item) {
+                $product = Product::lockForUpdate()->find($id);
+                if ($product->stock < $item['quantity']) {
+                    DB::rollBack();
+                    return redirect()->route('cart.index')
+                        ->with('error', "El producto {$product->name} ya no tiene suficiente stock.");
+                }
+            }
 
-        // 3. GUARDAR PRODUCTOS
-        foreach($cart as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['id'],
-                'product_name' => $item['name'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price']
+            $fullAddress = $request->street . ', ' . $request->city . ' (' . $request->zip . ') - ' . $request->country;
+
+            $order = Order::create([
+                'user_id' => Auth::id(),
+                'total_price' => $total,
+                'status' => 'pagado',
+                'shipping_address' => $fullAddress,
+                'payment_method' => 'tarjeta'
             ]);
-        }
 
-        // 4. LIMPIAR Y REDIRIGIR A ÉXITO
-        session()->forget('cart');
-        return view('cart.success', compact('order'));
+            foreach($cart as $item) {
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'product_name' => $item['name'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price']
+                ]);
+
+                $product = Product::find($item['id']);
+                $product->stock = $product->stock - $item['quantity'];
+                $product->save();
+            }
+
+            DB::commit();
+            session()->forget('cart');
+            return view('cart.success', compact('order'));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Error al procesar: ' . $e->getMessage());
+        }
     }
 }

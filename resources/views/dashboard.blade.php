@@ -31,12 +31,20 @@
                         </li>
                     </ul>
 
-                    <div class="d-flex gap-2">
+                    <div class="d-flex flex-wrap gap-2">
                         <a href="{{ route('profile.edit') }}" class="btn btn-warning">
-                            ✏️ Editar Perfil y Contraseña
+                            ✏️ Editar Perfil
                         </a>
 
+                        {{-- SECCIÓN SOLO PARA ADMINISTRADORES --}}
                         @if(Auth::user()->role === 'admin')
+                            
+                            {{-- Botón para descargar el CSV del Chatbot --}}
+                            <a href="{{ route('admin.export') }}" class="btn btn-success">
+                                🤖 Exportar Productos (Chatbot)
+                            </a>
+
+                            {{-- Botón para importar productos --}}
                             <a href="{{ route('admin.import') }}" class="btn btn-dark">
                                 📥 Importar Productos (Excel)
                             </a>
