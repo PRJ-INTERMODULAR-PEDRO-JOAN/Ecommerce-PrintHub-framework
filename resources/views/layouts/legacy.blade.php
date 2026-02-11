@@ -16,6 +16,28 @@
 </head>
 <body>
 
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top nav-shadow">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center" href="{{ route('home') }}">
+                <img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo" width="35" height="35" class="rounded-circle me-2">
+                <span class="fw-bold text-dark">PrintHub</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">🏠 Volver al Inicio</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+@auth
+    @if(Auth::user()->role === 'admin')
 <button class="alternar-menu">☰</button>
 
 <aside class="barra-lateral">
@@ -23,6 +45,9 @@
         <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
         <div class="logo"><img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo de PrintHub" /></div>
     </div>
+ 
+            <li><a href="{{ route('home') }}">Inicio</a></li>
+
     <ul class="iconos-utilidad">
         <li>
             <a href="{{ route('cart.index') }}" aria-label="Carrito" class="position-relative text-decoration-none">
@@ -78,8 +103,7 @@
             <li><a href="{{ route('gallery.index') }}">Galería de Proyectos</a></li>
             <li><a href="#impresoras">Impresoras 3D</a></li>
             <li><a href="{{ route('contact.index') }}">Formulario Contacto</a></li>
-             @auth
-                @if(Auth::user()->role === 'admin')
+             
                     <li>
                         <a href="{{ route('admin.import') }}" style="color: black;">
                             Importar Productos

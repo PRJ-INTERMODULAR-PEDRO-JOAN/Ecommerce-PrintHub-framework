@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\Product;
@@ -12,12 +13,19 @@ use App\Http\Controllers\Api\LikeController;
 |--------------------------------------------------------------------------
 */
 
-// 1. OBTENER USUARIO ACTUAL
+// --- RUTAS DE AUTENTICACIÓN (LOGIN/LOGOUT) ---
+// IMPORTANTE: Usamos el middleware 'web' para permitir sesiones y cookies
+Route::middleware(['web'])->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
+
+// --- OBTENER USUARIO ACTUAL ---
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// 2. PRODUCTOS (Público)
+// --- PRODUCTOS (Público) ---
 Route::get('/products', function () {
     return response()->json(Product::all(), 200);
 });
@@ -27,18 +35,14 @@ Route::get('/products/{id}', function ($id) {
     return $product ? response()->json($product) : response()->json(['mensaje' => 'No encontrado'], 404);
 });
 
-// 3. COMENTARIOS Y LIKES
-// Ver comentarios y estado del like (Público)
+// --- COMENTARIOS Y LIKES (Público) ---
 Route::get('/products/{id}/comments', [CommentController::class, 'index']);
 Route::get('/products/{id}/like', [LikeController::class, 'check']);
 
-// Rutas protegidas (Requieren Login)
+// --- RUTAS PROTEGIDAS (Requieren Login) ---
 Route::middleware('auth:sanctum')->group(function () {
-    // Comentarios
-    Route::post('/products/{id}/comments', [CommentController::class, 'store']);   // Crear
-    Route::put('/comments/{comment}', [CommentController::class, 'update']);       // Editar (Nuevo)
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);   // Borrar (Nuevo)
-
-    // Likes
+    Route::post('/products/{id}/comments', [CommentController::class, 'store']);
+    Route::put('/comments/{comment}', [CommentController::class, 'update']);
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);
     Route::post('/products/{id}/like', [LikeController::class, 'toggle']);
 });

@@ -1,0 +1,422 @@
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;500;600&family=Roboto+Mono:wght@700&display=swap');
+
+/* ================= GLOBALES ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #ffb981 0%, #83c5ff 100%);
+  color: #1a1a1a;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Chakra Petch', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* ================= BANNER ================= */
+.banner {
+  background: linear-gradient(90deg, #FF6B00, #ff7b1d);
+  color: #fff;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  font-family: 'Roboto Mono', monospace;
+  overflow: hidden;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.banner-texto {
+  display: inline-block;
+  padding-left: 100%;
+  animation: scrollText 40s linear infinite;
+  color: #000;
+}
+a.enlace-banner, a.enlace-banner:hover { text-decoration: none; color: inherit; }
+
+@keyframes scrollText {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* ================= HERO & CREEPER ================= */
+.hero, .creeper-hero {
+  height: 100vh;
+  text-align: center;
+  position: relative;
+}
+
+.hero-fila, .creeper-fila {
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+.hero {
+    background: linear-gradient(135deg, #FF6B00, #ff3c83, #007BFF);
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+.hero-contenido {
+  position: relative;
+  z-index: 1;
+  animation: fadeInUp 1s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  letter-spacing: 1px;
+  animation: pulseGlow 3s ease-in-out infinite;
+  color: #fff;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  color: #e0f2ff;
+  font-weight: 400;
+  text-transform: none;
+  animation: pulseGlow 3s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.flecha {
+  font-size: 2rem;
+  color: white;
+  text-decoration: none;
+  animation: bounce 1.5s infinite;
+  display: inline-block;
+}
+.flecha:hover { color: white; }
+
+/* CREEPER */
+.creeper-hero {
+  background: linear-gradient(135deg, #1f1f1f, #333);
+  margin-top: 40px;
+  color: white;
+}
+
+.creeper-fila {
+    align-items: start;
+    padding-top: 60px;
+}
+
+.creeper-contenido {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.creeper-botones {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.boton-creeper {
+  background: transparent;
+  color: #FF6B00;
+  border: 2px solid #FF6B00;
+  border-radius: 30px;
+  padding: 10px 25px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  text-transform: none;
+}
+.boton-creeper:hover {
+  background-color: #FF6B00;
+  color: #fff;
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+}
+
+/* ================= PRODUCTOS & IMPRESORAS ================= */
+.impresoras-section, .productos-destacados {
+  width: 100%;
+  padding: 40px 0;
+  margin-top: 40px;
+}
+.impresoras-section { background: #ffffff; }
+
+.impresoras-titulo, .productos-destacados h1 {
+  text-align: center;
+  font-size: 3.2rem; 
+  text-decoration: underline 4px #FF6B00;
+  margin: 40px 0; 
+}
+
+/* ESTILOS POR DEFECTO (Escritorio / Pantallas Grandes) */
+.contenedor-productos {
+  display: grid;
+  gap: 28px;
+  width: 100%;
+  /* 4 Columnas por defecto */
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+}
+
+.tarjeta-producto {
+  background: #FF6B00;
+  padding: 18px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: 0.3s ease;
+}
+.tarjeta-producto img { width: 100%; border-radius: 8px; }
+.tarjeta-producto:hover { transform: translateY(-8px); box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12); }
+.tarjeta-producto .producto-descripcion { font-size: 0.9rem; color: #222; text-align: center; min-height: 40px; }
+.tarjeta-producto .producto-precio { font-family: 'Roboto Mono', sans-serif; font-size: 1.5rem; font-weight: 700; color: #000; margin: 8px 0; }
+.tarjeta-producto .boton {
+  background: linear-gradient(90deg, #007BFF, #1f8bff);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: 'Inter', sans-serif;
+  text-transform: none;
+}
+.tarjeta-producto .boton:hover { transform: scale(1.08); box-shadow: 0 4px 15px rgba(255, 107, 0, 0.4); }
+
+/* ================= SOBRE NOSOTROS ================= */
+.seccion-sobre-nosotros {
+  padding: 80px 0;
+  background: #ffd8b8;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.sobre-nosotros-fila {
+    align-items: center;
+}
+
+.gif-sobre-nosotros { text-align: center; }
+.gif-sobre-nosotros img {
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%; 
+}
+
+/* ESTILOS POR DEFECTO (Escritorio / Pantallas Grandes) */
+.texto-sobre-nosotros { text-align: left; }
+.texto-sobre-nosotros h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #007BFF;
+  text-align: left; 
+}
+.texto-sobre-nosotros p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* ================= COMO FUNCIONA ================= */
+.seccion-como-funciona {
+  padding: 60px 0;
+  background-color: #fff;
+}
+.titulo-funciona { text-align: center; margin-bottom: 40px; }
+.contenedor-como-funciona h2 { font-size: 2.5rem; margin-bottom: 10px; color: #007BFF; }
+.subtitulo-como-funciona { font-size: 1.1rem; color: #555; }
+
+.tarjeta-paso {
+  background: #dbdbdb;
+  padding: 25px;
+  border-radius: 20px;
+  border-top: 4px solid #FF6B00;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.tarjeta-paso:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); }
+.tarjeta-paso .numero-paso {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  border-radius: 50%;
+  background: #FF6B00;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.tarjeta-paso h3 { font-size: 1.3rem; margin-bottom: 10px; color: #222; }
+.tarjeta-paso p { font-size: 0.95rem; line-height: 1.6; color: #444; }
+
+.boton-container { text-align: center; margin-top: 40px; }
+.boton-cta-primario {
+  background: linear-gradient(90deg, #FF6B00, #ff8c42);
+  color: #fff;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+  display: inline-block;
+}
+.boton-cta-primario:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5); color: #fff; }
+
+/* ================= VIDEO ================= */
+.video {
+  padding: 50px 0;
+  background: #c1daff;
+}
+.video-wrapper { text-align: center; }
+.video h2 { font-size: 2rem; color: #333; margin-bottom: 20px; }
+.video-contenedor video {
+  max-width: 800px;
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ================= TESTIMONIOS ================= */
+.seccion-testimonios {
+  padding: 60px 0;
+  text-align: center;
+}
+.seccion-testimonios h2 { font-size: 2.5rem; margin-bottom: 40px; color: #333; }
+
+.tarjeta-testimonio {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+  border-left: 5px solid #007BFF;
+  text-align: left;
+}
+.cita-testimonio {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  position: relative;
+  padding-left: 15px;
+}
+.cita-testimonio::before {
+  content: '“';
+  font-family: 'Georgia', serif;
+  font-size: 4rem;
+  color: #007BFF;
+  opacity: 0.2;
+  position: absolute;
+  top: -10px;
+  left: -15px;
+}
+.autor-testimonio { font-weight: 700; font-size: 1rem; color: #FF6B00; display: block; text-align: right; }
+
+/* Animaciones */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); opacity: 0.9; }
+  50% { transform: scale(1.05); text-shadow: 0 0 12px rgba(255, 255, 255, 0.6); opacity: 1; }
+  100% { transform: scale(1); text-shadow: 0 0 0px rgba(255, 255, 255, 0.2); opacity: 0.9; }
+}
+@keyframes bounce {
+  0%,20%,50%,80%,100% { transform: translateY(0); }
+  40% { transform: translateY(20px); }
+  60% { transform: translateY(15px); }
+}
+
+
+/* =========================================================
+   MEDIA QUERIES (SOLO 2 BLOQUES: TABLET y MOVIL)
+   Los estilos de escritorio son los predeterminados arriba.
+========================================================= */
+
+/* 1. TABLETS (Entre 576px y 992px) */
+@media (min-width: 576px) and (max-width: 991.98px) {
+    /* Sobrescribe las 4 columnas por defecto a 2 */
+    .contenedor-productos {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+    }
+
+    /* Sobrescribe la alineación izquierda por defecto a centro */
+    .texto-sobre-nosotros { text-align: center; }
+    .texto-sobre-nosotros h2 { text-align: center; }
+}
+
+/* 2. MÓVILES (Menos de 576px) */
+@media (max-width: 575.98px) {
+    /* Hero texto más pequeño */
+    .hero h1 { font-size: 2rem; }
+    .hero p { font-size: 1rem; }
+    
+    /* Grid de 1 columna */
+    .contenedor-productos {
+        grid-template-columns: 1fr;
+        /* Opcional: Si quieres que las columnas no sean tan anchas como la pantalla, 
+           puedes añadir márgenes laterales al grid aquí: */
+        padding: 0 10px; 
+    }
+
+    /* --- CAMBIOS PARA HACER LAS CARDS MÁS PEQUEÑAS --- */
+    .tarjeta-producto {
+        padding: 12px; /* Reducido de 18px */
+        gap: 6px;      /* Reducido de 10px */
+        border-radius: 10px; /* Un poco menos redondeado para ahorrar espacio visual */
+    }
+
+    .tarjeta-producto .producto-precio {
+        font-size: 1.2rem; /* Reducido de 1.5rem */
+        margin: 4px 0;
+    }
+
+    .tarjeta-producto .producto-descripcion {
+        font-size: 0.85rem; /* Letra un poco más pequeña */
+        min-height: auto;   /* Quitamos la altura mínima para que no ocupe espacio vacío */
+        margin-bottom: 5px;
+    }
+
+    .tarjeta-producto .boton {
+        padding: 8px 16px; /* Botón más compacto */
+        font-size: 0.9rem;
+    }
+    /* ------------------------------------------------ */
+
+    /* Sobrescribe la alineación izquierda por defecto a centro */
+    .texto-sobre-nosotros { text-align: center; }
+    .texto-sobre-nosotros h2 { text-align: center; }
+
+    /* Video titulo más pequeño */
+    .video h2 { font-size: 1.5rem; }
+}

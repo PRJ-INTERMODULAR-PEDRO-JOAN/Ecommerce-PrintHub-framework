@@ -16,11 +16,12 @@ return [
     */
 
     'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
-        Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
-    ))),
+    '%s%s',
+    'localhost,localhost:3000,127.0.0.1,127.0.0.1:8000,::1',
+    Sanctum::currentApplicationUrlWithPort()
+))),
+// Si tu Vue corre en localhost:5173, agrégalo a la lista de arriba o en tu .env:
+// SANCTUM_STATEFUL_DOMAINS=localhost:5173
 
     /*
     |--------------------------------------------------------------------------

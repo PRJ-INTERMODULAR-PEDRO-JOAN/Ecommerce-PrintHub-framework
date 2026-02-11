@@ -7,21 +7,15 @@ use Illuminate\Foundation\Configuration\Middleware;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
-        api: __DIR__.'/../routes/api.php',
+        api: __DIR__.'/../routes/api.php', // <--- Asegúrate que esto esté aquí
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Activamos el soporte para la API (Sanctum)
-        $middleware->api(prepend: [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-        ]);
-
-        // ALIAS CORREGIDOS
-        $middleware->alias([
-            // La corrección clave está aquí: Usamos Illuminate\... en lugar de App\...
-            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        ]);
+        
+        // ESTO ES LO CRUCIAL: Permite que el puerto 5173 use la sesión del 80
+        $middleware->statefulApi(); 
+        
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
