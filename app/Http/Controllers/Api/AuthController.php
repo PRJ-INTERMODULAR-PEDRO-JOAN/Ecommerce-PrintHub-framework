@@ -73,12 +73,17 @@ class AuthController extends Controller
 
     // --- LOGOUT ---
     public function logout(Request $request)
-    {
-        // Revocar solo el token actual (el que se usó para esta petición)
-        if ($request->user()) {
-            $request->user()->currentAccessToken()->delete();
-        }
-
-        return response()->json(['message' => 'Sesión cerrada exitosamente']);
+{
+    // 1. Revocar el token de Sanctum (API)
+    if ($request->user()) {
+        $request->user()->currentAccessToken()->delete();
     }
+
+    // 2. Forzar el cierre de la guardia web y limpiar la sesión/cookie
+    Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return response()->json(['message' => 'Sesión cerrada en API y Web']);
+}
 }

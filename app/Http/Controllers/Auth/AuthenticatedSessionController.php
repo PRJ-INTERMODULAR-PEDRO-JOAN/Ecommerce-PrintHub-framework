@@ -23,13 +23,25 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    // 1. Verificar si el usuario es administrador
+    if (Auth::user()->role !== 'admin') {
+        // Si no es admin, cerramos la sesión de Laravel (web) inmediatamente
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirigir al frontend de Vue
+        return redirect('http://localhost:5174/login?error=access_denied');
     }
+
+    // 2. Si es admin, procedemos con la sesión normal de Laravel
+    $request->session()->regenerate();
+
+    return redirect()->intended(route('dashboard', absolute: false));
+}
 
     /**
      * Destroy an authenticated session.

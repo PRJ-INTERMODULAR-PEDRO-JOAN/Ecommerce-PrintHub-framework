@@ -37,8 +37,13 @@ Route::get('/productes/{id}', [ProductController::class, 'show'])->name('product
 // -----------------------------------------------------------------------------
 // 3. RUTAS PROTEGIDAS (BACKOFFICE - SOLO ADMIN)
 // -----------------------------------------------------------------------------
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', \App\Http\Middleware\AdminMiddleware::class])->group(function () {
     
+    // Dashboard, Perfil, Gestión de Productos, etc.
+    Route::get('/dashboard', function () { 
+        return view('dashboard'); 
+    })->name('dashboard');
+
     // Checkout (Proceso de compra en Laravel)
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     Route::post('/checkout', [CartController::class, 'processPayment'])->name('cart.process');
@@ -90,17 +95,14 @@ Route::get('/export-products-agent', function () {
 // -----------------------------------------------------------------------------
 // Esta debe ir AL FINAL. Captura la ruta raíz '/' y cualquier otra no definida arriba.
 Route::get('/{any?}', function () {
-    $user = \Illuminate\Support\Facades\Auth::user();
+    $user = Auth::user();
 
-    // A) Si es ADMIN -> Dashboard de Laravel
+    // Si es ADMIN y está en Laravel, al Dashboard
     if ($user && $user->role === 'admin') {
         return redirect()->route('dashboard');
     }
 
-    // B) Si es CLIENTE -> Frontend Vue
-    if (app()->environment('local')) {
-        return redirect('http://localhost:5174');
-    }
-    return view('spa_view'); 
+    // Para todos los demás (Invitados o Clientes), al Frontend Vue
+    return redirect('http://localhost:5174');
 
-})->where('any', '^(?!api|sanctum).*$')->name('home'); // <--- ¡AQUÍ ESTÁ EL CAMBIO!
+})->where('any', '^(?!api|sanctum).*$')->name('home');
