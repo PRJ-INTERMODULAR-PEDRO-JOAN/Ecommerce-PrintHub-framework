@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\ProfileController;
 use App\Models\Product;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\LikeController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,36 +15,31 @@ use App\Http\Controllers\Api\LikeController;
 |--------------------------------------------------------------------------
 */
 
-// --- RUTAS PÚBLICAS (No requieren token) ---
-
+// --- RUTAS PÚBLICAS ---
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']); // <--- IMPORTANTE
+Route::post('/register', [AuthController::class, 'register']);
 
-// Productos (Lectura)
 Route::get('/products', function () {
     return Product::all();
 });
-Route::get('/products/{id}', function ($id) {
-    return Product::findOrFail($id);
-});
+// Usamos el controlador para el detalle
+Route::get('/products/{id}', [ProductController::class, 'showApi']);
 Route::get('/products/{id}/comments', [CommentController::class, 'index']);
 
+// --- RUTA DE EDICIÓN (ESENCIAL) ---
+// Usamos 'web' para detectar la cookie de sesión del Admin y 'AdminMiddleware' para validar el rol
+Route::put('/products/{id}', [ProductController::class, 'updateApi']);
 
-// --- RUTAS PROTEGIDAS (Requieren Token Bearer) ---
+
+// --- RUTAS PROTEGIDAS POR TOKEN (RESTO) ---
 Route::middleware(['auth:sanctum'])->group(function () {
-    
-    // Auth
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-
-    // Perfil y Dashboard
     Route::patch('/profile', [ProfileController::class, 'update']);
     Route::put('/password', [ProfileController::class, 'updatePassword']);
     Route::delete('/profile', [ProfileController::class, 'destroy']);
-
-    // Interacciones
     Route::post('/products/{id}/comments', [CommentController::class, 'store']);
     Route::post('/products/{id}/like', [LikeController::class, 'toggle']);
     Route::get('/products/{id}/like', [LikeController::class, 'check']);

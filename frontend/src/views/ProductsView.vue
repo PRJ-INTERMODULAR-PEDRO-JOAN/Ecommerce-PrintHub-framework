@@ -52,7 +52,7 @@
                 </div>
 
                 <router-link 
-                    :to="`/productes/${product.id}`" 
+                    :to="`/products/${product.id}`" 
                     class="btn w-100 mt-2"
                     :class="product.stock <= 0 ? 'btn-secondary disabled' : 'btn-primary'"
                     :style="{ pointerEvents: product.stock <= 0 ? 'none' : 'auto' }"

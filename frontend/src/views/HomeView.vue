@@ -44,7 +44,7 @@
               </div>
 
               <div class="d-flex flex-column flex-md-row gap-3 justify-content-center justify-content-md-start">
-                <router-link :to="`/productes/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4">
+                <router-link :to="`/products/${ofertaDia.id}`" class="btn btn-outline-dark btn-lg rounded-pill px-4">
                   Ver Detalles
                 </router-link>
                 <button class="btn btn-danger btn-lg rounded-pill px-5 shadow fw-bold animate-pulse">
@@ -90,7 +90,7 @@
                 <span v-else class="producto-precio">{{ formatPrice(product.price) }}</span>
               </div>
 
-              <router-link :to="`/productes/${product.id}`" class="btn w-100 mt-2" :class="product.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
+              <router-link :to="`/products/${product.id}`" class="btn w-100 mt-2" :class="product.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
                 Ver Detalles y Opinar
               </router-link>
             </div>
@@ -120,7 +120,7 @@
                   <span class="producto-precio">{{ formatPrice(impresora.price) }}</span>
               </div>
 
-              <router-link :to="`/productes/${impresora.id}`" class="btn w-100 mt-2" :class="impresora.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
+              <router-link :to="`/products/${impresora.id}`" class="btn w-100 mt-2" :class="impresora.stock <= 0 ? 'btn-secondary disabled' : 'boton'">
                 Ver Detalles y Opinar
               </router-link>
             </div>
