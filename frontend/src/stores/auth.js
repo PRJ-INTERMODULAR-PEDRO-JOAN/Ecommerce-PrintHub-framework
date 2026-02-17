@@ -1,58 +1,70 @@
 import { defineStore } from 'pinia';
-import axios from '../api/axios'; // Asegúrate que esta ruta sea correcta
+import axios from '../api/axios'; 
 import router from '../router'; 
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
+    token: localStorage.getItem('token') || null,
     loading: false,
     errors: null
   }),
   actions: {
-    // OBTENER USUARIO ACTUAL
-    async fetchUser() {
+    // LOGIN
+    async login(credentials) {
       this.loading = true;
+      this.errors = null;
+
+      // Limpieza preventiva
+      localStorage.removeItem('token');
+      this.token = null;
+      this.user = null;
+      delete axios.defaults.headers.common['Authorization'];
+
       try {
-        const response = await axios.get('/api/user');
-        this.user = response.data;
+        // Petición al backend
+        const response = await axios.post('/api/login', credentials);
+        
+        // Guardar datos recibidos
+        this.token = response.data.accessToken;
+        this.user = response.data.user;
+        
+        // Persistir Token
+        localStorage.setItem('token', this.token);
+        
+        // Redirigir
+        router.push('/dashboard'); 
+        
       } catch (error) {
-        this.user = null;
+        if (error.response && error.response.status === 401) {
+            this.errors = { email: ['Credenciales incorrectas.'] };
+        } else if (error.response && error.response.status === 422) {
+            this.errors = error.response.data.errors;
+        } else {
+            console.error(error);
+            this.errors = { email: ['Error del servidor.'] };
+        }
+        throw error;
       } finally {
         this.loading = false;
       }
     },
 
-    // LOGIN
-    async login(credentials) {
+    // OBTENER USUARIO (Para recargar la página)
+    async fetchUser() {
+      if (!this.token) return;
+      
       this.loading = true;
-      this.errors = null;
       try {
-        // 1. OBLIGATORIO: Pedir la cookie CSRF a Laravel antes de nada
-        // Esto evita el error 419
-        await axios.get('/sanctum/csrf-cookie');
-        
-        // 2. Hacer login
-        await axios.post('/api/login', credentials);
-        
-        // 3. Si todo va bien, obtener datos del usuario y redirigir
-        await this.fetchUser();
-        
-        // Redirigir al usuario (Dashboard o Home)
-        router.push('/dashboard'); 
-        
+        // Laravel usará el token del header para identificar al usuario
+        const response = await axios.get('/api/user');
+        this.user = response.data;
       } catch (error) {
-        if (error.response && error.response.status === 422) {
-            // Error de validación (contraseña incorrecta, etc)
-            this.errors = error.response.data.errors;
-        } else if (error.response && error.response.status === 419) {
-            // Token expirado
-            this.errors = { email: ['La sesión ha expirado, recarga la página.'] };
-        } else {
-            // Otros errores (500, etc)
-            console.error(error);
-            this.errors = { email: ['Error del servidor. Inténtalo más tarde.'] };
-        }
-        throw error;
+        // Si el token es inválido o expiró
+        this.user = null;
+        this.token = null;
+        localStorage.removeItem('token');
+        router.push('/login');
       } finally {
         this.loading = false;
       }
@@ -61,17 +73,16 @@ export const useAuthStore = defineStore('auth', {
     // LOGOUT
     async logout() {
         try {
-          await axios.post('/api/logout');
+          // Intentamos enviar cookies por si acaso existen
+          await axios.post('/api/logout', {}, { withCredentials: true });
         } catch (error) {
-          console.error('Error al cerrar sesión en el servidor', error);
+          console.error('Error al cerrar sesión', error);
         } finally {
-          // IMPORTANTE: Limpiar el estado aunque la petición falle
           this.user = null;
-          this.errors = null;
+          this.token = null;
+          localStorage.removeItem('token');
+          delete axios.defaults.headers.common['Authorization'];
           
-          // Opcional: Si usas localStorage para persistir el store de Pinia, límpialo aquí
-          // localStorage.removeItem('auth'); 
-      
           router.push('/login'); 
         }
       }

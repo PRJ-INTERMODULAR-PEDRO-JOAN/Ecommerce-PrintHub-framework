@@ -182,8 +182,6 @@
         </div>
       </section>
 
-      <div id="chatbot-container"></div>
-
     </div>
   </MainLayout>
 </template>
@@ -209,7 +207,6 @@ const fetchProducts = async () => {
 };
 
 // --- LOGICA CATEGORIAS CORREGIDA ---
-// Se filtran los productos basándose en el valor exacto del campo 'category'
 const impresoras = computed(() => {
     return products.value.filter(p => 
         p.category && p.category.toLowerCase() === 'impresoras'
@@ -251,24 +248,23 @@ const truncate = (text, length) => {
 onMounted(() => {
     fetchProducts();
 
-    // Chatbot Dialogflow
-    const script = document.createElement('script');
-    script.src = "https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js";
-    script.async = true;
-    document.body.appendChild(script);
+    // --- CHATBOT N8N CON PROXY (Sin CORS) ---
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
+    document.head.appendChild(link);
 
-    const chatContainer = document.getElementById('chatbot-container');
-    if (chatContainer) {
-        chatContainer.innerHTML = `
-            <df-messenger
-                project-id="COSAS"
-                agent-id="COSAS"
-                language-code="es"
-                max-query-length="-1">
-                <df-messenger-chat-bubble chat-title="Asistente PrintHub"></df-messenger-chat-bubble>
-            </df-messenger>
-        `;
-    }
+    import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
+        .then(module => {
+            module.createChat({
+                // CAMBIO IMPORTANTE: Usamos la ruta relativa /n8n/...
+                // Vite transformará esto a http://localhost:5678/webhook/...
+                webhookUrl: '/n8n/webhook/2f4e8def-1604-43d9-a0c4-5677de10f699/chat'
+            });
+        })
+        .catch(err => {
+            console.error('Error cargando el chatbot de n8n:', err);
+        });
 });
 </script>
 
@@ -294,13 +290,7 @@ onMounted(() => {
     70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
 }
-/* Chatbot Styles */
-df-messenger {
-    z-index: 999;
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-}
+
 /* Ajuste para que el overlay de agotado funcione */
 .tarjeta-producto {
   position: relative;
