@@ -99,7 +99,7 @@ Route::get('/{any?}', function () {
 
     // B) Si es CLIENTE -> Frontend Vue
     if (app()->environment('local')) {
-        return redirect('http://localhost:5173');
+        return redirect('http://localhost:5174');
     }
     return view('spa_view'); 
 

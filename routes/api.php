@@ -17,9 +17,15 @@ use App\Http\Controllers\Api\LikeController;
 // IMPORTANTE: Usamos el middleware 'web' para permitir sesiones y cookies
 Route::middleware(['web'])->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
+// Rutas que requieren que el usuario esté identificado
+Route::middleware(['web', 'auth:sanctum'])->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
 // --- OBTENER USUARIO ACTUAL ---
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();

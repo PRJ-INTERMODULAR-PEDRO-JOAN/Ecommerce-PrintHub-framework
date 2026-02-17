@@ -60,13 +60,20 @@ export const useAuthStore = defineStore('auth', {
 
     // LOGOUT
     async logout() {
-      try {
-        await axios.post('/api/logout');
-        this.user = null;
-        router.push('/login'); 
-      } catch (error) {
-        console.error('Error al cerrar sesión', error);
+        try {
+          await axios.post('/api/logout');
+        } catch (error) {
+          console.error('Error al cerrar sesión en el servidor', error);
+        } finally {
+          // IMPORTANTE: Limpiar el estado aunque la petición falle
+          this.user = null;
+          this.errors = null;
+          
+          // Opcional: Si usas localStorage para persistir el store de Pinia, límpialo aquí
+          // localStorage.removeItem('auth'); 
+      
+          router.push('/login'); 
+        }
       }
-    }
   }
 });

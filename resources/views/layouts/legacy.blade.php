@@ -36,8 +36,7 @@
         </div>
     </nav>
 
-@auth
-    @if(Auth::user()->role === 'admin')
+
 <button class="alternar-menu">☰</button>
 
 <aside class="barra-lateral">
@@ -85,7 +84,8 @@
             </li>
         @endauth
     </ul>
-    
+    @auth
+    @if(Auth::user()->role === 'admin')
     <h3 class="etiqueta-menu">Menú</h3>
     <nav>
         <ul>

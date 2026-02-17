@@ -208,18 +208,17 @@ const fetchProducts = async () => {
   }
 };
 
-// --- LOGICA CATEGORIAS ---
+// --- LOGICA CATEGORIAS CORREGIDA ---
+// Se filtran los productos basándose en el valor exacto del campo 'category'
 const impresoras = computed(() => {
     return products.value.filter(p => 
-        (p.name && p.name.toLowerCase().includes('impresora')) || 
-        (p.description && p.description.toLowerCase().includes('impresora'))
+        p.category && p.category.toLowerCase() === 'impresoras'
     );
 });
 
 const destacados = computed(() => {
     return products.value.filter(p => 
-        (!p.name || !p.name.toLowerCase().includes('impresora')) && 
-        (!p.description || !p.description.toLowerCase().includes('impresora'))
+        !p.category || p.category.toLowerCase() !== 'impresoras'
     );
 });
 
