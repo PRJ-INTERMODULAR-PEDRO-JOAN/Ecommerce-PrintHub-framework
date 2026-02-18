@@ -30,36 +30,13 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="{{ route('products.list') }}">Todos Nuestros Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">🏠 Volver al Inicio</a></li>
                 </ul>
             </div>
-        </div>
-    </nav>
 
 
-<button class="alternar-menu">☰</button>
-
-<aside class="barra-lateral">
-    <div class="barra-lateral-cabecera">
-        <h1 class="logo-texto">Print<span class="resaltado">Hub</span></h1>
-        <div class="logo"><img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo de PrintHub" /></div>
-    </div>
- 
-            <li><a href="{{ route('home') }}">Inicio</a></li>
-
-    <ul class="iconos-utilidad">
-        <li>
-            <a href="{{ route('cart.index') }}" aria-label="Carrito" class="position-relative text-decoration-none">
-                🛒
-                @if(session('cart'))
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5em;">
-                        {{ count(session('cart')) }}
-                    </span>
-                @endif
-            </a>
-        </li>
-        
-        @auth
+            @auth
             <li class="nav-item dropdown ms-3" style="list-style: none;">
                 <a class="nav-link dropdown-toggle text-black" href="#" role="button" data-bs-toggle="dropdown">
                     {{ Auth::user()->name }}
@@ -83,37 +60,9 @@
                 </a>
             </li>
         @endauth
-    </ul>
-    @auth
-    @if(Auth::user()->role === 'admin')
-    <h3 class="etiqueta-menu">Menú</h3>
-    <nav>
-        <ul>
-            <li><a href="{{ route('home') }}">Inicio</a></li>
-            <li class="desplegable">
-                <a href="#">Maquetas Personalizadas ▾</a>
-                <ul class="contenido-desplegable">
-                    <li><a href="">Videojuegos</a></li>
-                    <li><a href="#">Arquitectura</a></li>
-                    <li><a href="#">Automóviles</a></li>
-                </ul>
-            </li>
-            <li><a href="{{ route('products.list') }}">Todos Nuestros Productos</a></li>
-            <li><a href="#como-funciona">Diseñar Maquetas</a></li>
-            <li><a href="{{ route('gallery.index') }}">Galería de Proyectos</a></li>
-            <li><a href="#impresoras">Impresoras 3D</a></li>
-            <li><a href="{{ route('contact.index') }}">Formulario Contacto</a></li>
-             
-                    <li>
-                        <a href="{{ route('admin.import') }}" style="color: black;">
-                            Importar Productos
-                        </a>
-                    </li>
-                @endif
-            @endauth
-        </ul>
+        </div>
     </nav>
-</aside>
+
 
     <main>
         @yield('content')

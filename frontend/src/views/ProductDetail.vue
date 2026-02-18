@@ -52,7 +52,8 @@
                           </div>
   
                           <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
-                              <button 
+                              <button
+                                    v-if="auth.user"
                                   @click="toggleLike" 
                                   class="btn btn-lg rounded-pill px-4 transition-btn"
                                   :class="isLiked ? 'btn-danger' : 'btn-outline-danger'"
@@ -61,6 +62,13 @@
                                   {{ likesCount }} Likes
                               </button>
                               
+                              <button v-else                                   
+                              
+                                class="btn btn-lg rounded-pill px-4 transition-btn btn-danger"
+                                    @click="$router.push('/login')"
+                              >
+                                Iniciar Sesión Para Likes
+                              </button>
                               <button 
                                   v-if="product.stock > 0" 
                                   @click="addToCart"

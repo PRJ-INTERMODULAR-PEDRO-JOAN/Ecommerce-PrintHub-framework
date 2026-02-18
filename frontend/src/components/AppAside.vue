@@ -74,7 +74,15 @@
             <li><router-link to="/#como-funciona" @click="closeMenu">Diseñar Maquetas</router-link></li>
             <li><router-link to="/gallery" @click="closeMenu">Galería de Proyectos</router-link></li>
             <li><router-link to="/#impresoras" @click="closeMenu">Impresoras 3D</router-link></li>
-            <li><router-link to="/contacto" @click="closeMenu">Formulario Contacto</router-link></li>
+            <li>
+              <a 
+                href="http://localhost:5678/form/fb9dd885-a08a-4146-a96a-5664b3560d7c" 
+                target="_blank"
+                @click="closeMenu"
+              >
+                Formulario Contacto
+              </a>
+            </li>
              
              <li v-if="auth.user && auth.user.role === 'admin'">
                 <a href="http://localhost/admin/import" style="color: black;">Importar Productos</a>
