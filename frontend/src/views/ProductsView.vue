@@ -164,4 +164,61 @@ onMounted(() => {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     padding-bottom: 40px;
 }
+
+@media (min-width: 576px) and (max-width: 991.98px) {
+    /* Sobrescribe las 4 columnas por defecto a 2 */
+    .contenedor-productos {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+    }
+
+    /* Sobrescribe la alineación izquierda por defecto a centro */
+    .texto-sobre-nosotros { text-align: center; }
+    .texto-sobre-nosotros h2 { text-align: center; }
+}
+
+/* 2. MÓVILES (Menos de 576px) */
+@media (max-width: 575.98px) {
+    /* Hero texto más pequeño */
+    .hero h1 { font-size: 2rem; }
+    .hero p { font-size: 1rem; }
+    
+    /* Grid de 1 columna */
+    .contenedor-productos {
+        grid-template-columns: 1fr;
+        /* Opcional: Si quieres que las columnas no sean tan anchas como la pantalla, 
+           puedes añadir márgenes laterales al grid aquí: */
+        padding: 0 10px; 
+    }
+
+    /* --- CAMBIOS PARA HACER LAS CARDS MÁS PEQUEÑAS --- */
+    .tarjeta-producto {
+        padding: 12px; /* Reducido de 18px */
+        gap: 6px;      /* Reducido de 10px */
+        border-radius: 10px; /* Un poco menos redondeado para ahorrar espacio visual */
+    }
+
+    .tarjeta-producto .producto-precio {
+        font-size: 1.2rem; /* Reducido de 1.5rem */
+        margin: 4px 0;
+    }
+
+    .tarjeta-producto .producto-descripcion {
+        font-size: 0.85rem; /* Letra un poco más pequeña */
+        min-height: auto;   /* Quitamos la altura mínima para que no ocupe espacio vacío */
+        margin-bottom: 5px;
+    }
+
+    .tarjeta-producto .boton {
+        padding: 8px 16px; /* Botón más compacto */
+        font-size: 0.9rem;
+    }
+    /* ------------------------------------------------ */
+
+    /* Sobrescribe la alineación izquierda por defecto a centro */
+    .texto-sobre-nosotros { text-align: center; }
+    .texto-sobre-nosotros h2 { text-align: center; }
+
+    /* Video titulo más pequeño */
+    .video h2 { font-size: 1.5rem; }
+}
 </style>
