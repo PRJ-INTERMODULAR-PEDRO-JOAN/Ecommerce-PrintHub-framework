@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\Api\CheckoutController; 
 
 /*
 |--------------------------------------------------------------------------
@@ -43,4 +44,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/products/{id}/comments', [CommentController::class, 'store']);
     Route::post('/products/{id}/like', [LikeController::class, 'toggle']);
     Route::get('/products/{id}/like', [LikeController::class, 'check']);
+    Route::post('/checkout', action: [CheckoutController::class, 'store']);
 });

@@ -8,13 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'total_price', 'status', 'shipping_address', 'payment_method'];
 
-    public function items() {
+    // ESTO ES LO QUE SEGURAMENTE TE FALTA
+    protected $fillable = [
+        'user_id',
+        'total_price',
+        'shipping_address',
+        'status',
+        'payment_method'
+    ];
+
+    // Relación: Un pedido tiene muchos items
+    public function items()
+    {
         return $this->hasMany(OrderItem::class);
-    }
-    
-    public function user() {
-        return $this->belongsTo(User::class);
     }
 }

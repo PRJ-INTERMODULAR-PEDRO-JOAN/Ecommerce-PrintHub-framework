@@ -51,9 +51,9 @@
                               <span v-else class="badge bg-secondary">Sin Stock</span>
                           </div>
   
-                          <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                          <div class="d-flex flex-wrap align-items-center gap-3 mb-4 position-relative">
                               <button
-                                    v-if="auth.user"
+                                  v-if="auth.user"
                                   @click="toggleLike" 
                                   class="btn btn-lg rounded-pill px-4 transition-btn"
                                   :class="isLiked ? 'btn-danger' : 'btn-outline-danger'"
@@ -63,22 +63,38 @@
                               </button>
                               
                               <button v-else                                   
-                              
-                                class="btn btn-lg rounded-pill px-4 transition-btn btn-danger"
-                                    @click="$router.push('/login')"
+                                  class="btn btn-lg rounded-pill px-4 transition-btn btn-danger"
+                                  @click="$router.push('/login')"
                               >
-                                Iniciar Sesión Para Likes
+                                Login para Likes
                               </button>
+  
                               <button 
-                                  v-if="product.stock > 0" 
-                                  @click="addToCart"
+                                  v-if="canAddToCart" 
+                                  @click="handleAddToCart"
                                   class="btn btn-success btn-lg px-5 rounded-pill shadow transition-btn"
                               >
                                   Añadir al Carrito 🛒
                               </button>
+  
+                              <button 
+                                  v-else-if="product.stock > 0 && !canAddToCart" 
+                                  class="btn btn-warning btn-lg px-5 rounded-pill shadow text-dark fw-bold" 
+                                  disabled
+                                  title="No puedes añadir más unidades de las que hay disponibles"
+                              >
+                                  Máx. Stock Alcanzado ⚠️
+                              </button>
+  
                               <button v-else class="btn btn-secondary btn-lg px-5 rounded-pill shadow" disabled>
                                   🚫 AGOTADO
                               </button>
+  
+                              <transition name="fade">
+                                  <span v-if="showAddedMessage" class="added-notification text-success fw-bold ms-2">
+                                      ✅ ¡Añadido!
+                                  </span>
+                              </transition>
   
                               <router-link 
                                   v-if="auth.user && auth.user.role === 'admin'"
@@ -156,28 +172,46 @@
   import MainLayout from '../layouts/MainLayout.vue';
   import axios from '../api/axios';
   import { useAuthStore } from '../stores/auth';
+  import { useCartStore } from '../stores/cart';
   
   const route = useRoute();
   const auth = useAuthStore();
+  const cartStore = useCartStore();
   
   const product = ref(null);
   const comments = ref([]);
   const loading = ref(true);
   const isLiked = ref(false);
   const likesCount = ref(0);
+  const showAddedMessage = ref(false);
   
   const newComment = ref({ rating: 5, text: '' });
   
   const averageRating = computed(() => {
       if (!comments.value.length) return 0;
-      return (comments.value.reduce((acc, c) => acc + c.rating, 0) / comments.value.length).toFixed(1);
+      const sum = comments.value.reduce((acc, c) => acc + parseInt(c.rating), 0);
+      return (sum / comments.value.length).toFixed(1);
+  });
+  
+  // --- LÓGICA DE STOCK VS CARRITO ---
+  const canAddToCart = computed(() => {
+      if (!product.value) return false;
+      
+      // 1. Si el producto no tiene stock base
+      if (product.value.stock <= 0) return false;
+  
+      // 2. Comprobar cuántos tenemos ya en el carrito
+      const itemInCart = cartStore.cart.find(item => item.id === product.value.id);
+      const quantityInCart = itemInCart ? itemInCart.quantity : 0;
+  
+      // 3. Permitir solo si (lo que tengo + 1) es menor o igual al stock
+      return (quantityInCart + 1) <= product.value.stock;
   });
   
   onMounted(async () => {
       const id = route.params.id;
       loading.value = true;
       try {
-          // Cargar Producto y Comentarios (Público)
           const [prodRes, commRes] = await Promise.all([
               axios.get(`/api/products/${id}`),
               axios.get(`/api/products/${id}/comments`)
@@ -186,14 +220,13 @@
           product.value = prodRes.data;
           comments.value = commRes.data;
   
-          // Cargar Likes (Solo si logueado)
           if (auth.user) {
-              const likeRes = await axios.get(`/api/products/${id}/like`);
-              isLiked.value = likeRes.data.is_liked;
-              likesCount.value = likeRes.data.likes_count;
+              try {
+                  const likeRes = await axios.get(`/api/products/${id}/like`);
+                  isLiked.value = likeRes.data.is_liked;
+                  likesCount.value = likeRes.data.likes_count;
+              } catch (e) {}
           } else {
-              // Si es invitado, usamos el contador que viene del producto (si el backend lo envía) 
-              // o lo dejamos en 0 hasta que intente dar like
               likesCount.value = prodRes.data.likes_count || 0;
           }
   
@@ -231,12 +264,29 @@
       } catch (e) { alert("Error al borrar."); }
   };
   
-  const addToCart = () => alert("Producto añadido al carrito");
+  const handleAddToCart = () => {
+      if (canAddToCart.value) {
+          cartStore.addToCart(product.value);
+          showAddedMessage.value = true;
+          setTimeout(() => { showAddedMessage.value = false; }, 2000);
+      }
+  };
   
-  // Helpers
-  const getImagePath = (img) => !img ? '/img/marcaDeAgua.png' : (img.startsWith('http') ? img : `/img/${img}`);
+  // --- PUERTO 80 ---
+  const getImagePath = (img) => {
+      if (!img) return '/img/marcaDeAgua.png';
+      // Si la imagen ya es absoluta, devolverla.
+      if (img.startsWith('http')) return img;
+      // Si Laravel está en el puerto 80, no ponemos puerto (es el default)
+      return `http://localhost/img/${img}`;
+  };
+  
   const handleImageError = (e) => e.target.src = '/img/marcaDeAgua.png';
-  const formatPrice = (p) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
+  
+  const formatPrice = (p) => {
+      if (p === undefined || p === null) return '0,00 €';
+      return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(p);
+  };
   </script>
   
   <style scoped>
@@ -252,4 +302,22 @@
   }
   .transition-btn { transition: transform 0.2s; }
   .transition-btn:active { transform: scale(0.95); }
+  
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s ease;
+  }
+  
+  .fade-enter-from,
+  .fade-leave-to {
+    opacity: 0;
+  }
+  
+  .added-notification {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  }
   </style>
