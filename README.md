@@ -1,76 +1,147 @@
-# PrintHub E-Commerce Framework
+# 🛍️ PrintHub – Framework de Comercio Electrónico
 
-![Vista prèvia de l'aplicació](./public/img/captura-inicio.jpg)
-
-## 📖 Descripció
-
-[cite_start]PrintHub és un framework de comerç electrònic desenvolupat amb Laravel i Vue.js[cite: 279]. Aquest projecte ofereix una solució completa per a la gestió de vendes, carret de la compra, usuaris i catàleg de productes.
-
-## 📑 Taula de Continguts
-
-1. [Recursos i Tecnologies utilitzades](#recursos-i-tecnologies-utilitzades)
-2. [Requisits previs](#requisits-previs)
-3. [Procés d'Instal·lació i Posada en marxa](#procés-dinstallació-i-posada-en-marxa)
-4. [Normes de Contribució](#normes-de-contribució)
-5. [Crèdits i Contribuïdors](#crèdits-i-contribuïdors)
-6. [Llicència](#llicència)
+![Vista previa de la aplicación](./public/img/captura-inicio.jpg)
 
 ---
 
-## 🛠 Recursos i Tecnologies utilitzades
+## 📖 Descripción
 
-[cite_start]Per al desenvolupament d'aquest projecte s'han utilitzat les següents eines[cite: 282]:
+**PrintHub** es un framework de comercio electrónico desarrollado con Laravel y Vue.js.  
+Ofrece una solución integral para la gestión de productos, carrito de compra, perfiles de usuario y un panel de administración para la gestión del inventario.
 
-- **Backend:** PHP 8.2 i Laravel 11
-- **Frontend:** Vue.js, HTML5, CSS3 i Bootstrap 5
-- **Base de Dades:** MySQL / MariaDB
-- **Gestor de dependències:** Composer (PHP) i NPM (Node.js)
+Está pensado como una base moderna y escalable para proyectos e-commerce.
 
-## ⚙️ Requisits previs
+---
 
-[cite_start]Abans d'instal·lar el projecte, assegura't de tenir instal·lats els següents programes en el teu entorn de desenvolupament local[cite: 282]:
+## 📑 Tabla de Contenidos
 
-- Servidor local (XAMPP, Laragon, o Docker).
-- PHP >= 8.2.
-- Composer.
-- Node.js i npm.
-- Git.
+1. Recursos y Tecnologías Utilizadas
+2. Requisitos Previos
+3. Instalación y Puesta en Marcha
+4. Normas de Contribución
+5. Créditos y Contribuidores
+6. Licencia
 
-## 🚀 Procés d'Instal·lació i Posada en marxa
+---
 
-[cite_start]Segueix aquests passos en ordre per desplegar i instal·lar l'aplicació en el teu entorn local[cite: 281]:
+## 🛠 Recursos y Tecnologías Utilizadas
 
-**1. Clonar el repositori**
-Obre el teu terminal, dirigeix-te a la carpeta del teu servidor web (per exemple `htdocs` a XAMPP) i clona el projecte:
+**Backend**
 
-```bash
-git clone [https://ruta-al-teu-repositori.git](https://ruta-al-teu-repositori.git)
-cd ecommerce-printhub-framework
-2. Instal·lar les dependències del Backend (PHP/Laravel)
-Descarrega i instal·la totes les llibreries necessàries executant Composer:
+- PHP 8.2
+- Laravel 11
 
-Bash
-composer install
-3. Configurar les variables d'entorn
-Crea el teu propi fitxer de configuració copiant el fitxer d'exemple que ve al repositori:
+**Frontend**
 
-Bash
-cp .env.example .env
-Nota important: Obre el fitxer .env en el teu editor de codi i configura les credencials de la teva base de dades local (modifica DB_DATABASE, DB_USERNAME i DB_PASSWORD).
+- Vue.js
+- HTML5
+- CSS3
+- Bootstrap 5
 
-4. Generar la clau de l'aplicació
-Genera la clau d'encriptació requerida per Laravel:
+**Base de Datos**
 
-Bash
-php artisan key:generate
-5. Executar les migracions i seeders
-Crea les taules a la teva base de dades i omple-les amb les dades de prova inicials (productes, usuaris, etc.):
+- MySQL
+- MariaDB
 
-Bash
-php artisan migrate --seed
-6. Instal·lar dependències del Frontend (Vue.js/Bootstrap)
-Descarrega els paquets de Node necessaris per compilar les vistes:
+**Gestores de Dependencias**
 
-Bash
-npm install
-```
+- Composer (PHP)
+- NPM (Node.js)
+
+---
+
+## ⚙️ Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado en tu equipo:
+
+- Servidor local (XAMPP, Laragon o similar)
+- PHP >= 8.2
+- Composer
+- Node.js y npm
+- Git
+
+---
+
+## 🚀 Instalación y Puesta en Marcha
+
+Sigue estos pasos en orden para desplegar la aplicación en tu entorno local:
+
+### 1️⃣ Clonar el repositorio
+
+Abre una terminal en la carpeta de tu servidor web y ejecuta el comando `git clone https://ruta-a-tu-repositorio.git` y luego accede al directorio con `cd ecommerce-printhub-framework`.
+
+---
+
+### 2️⃣ Instalar dependencias de PHP
+
+Ejecuta el comando `composer install` para descargar todas las dependencias del backend.
+
+---
+
+### 3️⃣ Configurar las variables de entorno
+
+Crea el archivo de configuración ejecutando `cp .env.example .env`.
+
+Después, abre el archivo `.env` y configura los datos de tu base de datos en las variables `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD`.
+
+---
+
+### 4️⃣ Generar la clave de la aplicación
+
+Ejecuta el comando `php artisan key:generate` para crear la clave de seguridad de la aplicación.
+
+---
+
+### 5️⃣ Ejecutar migraciones y seeders
+
+Ejecuta `php artisan migrate --seed` para crear las tablas en la base de datos y cargar los datos iniciales de prueba.
+
+---
+
+### 6️⃣ Instalar dependencias del frontend
+
+Ejecuta `npm install` para descargar las dependencias necesarias del frontend.
+
+---
+
+### 7️⃣ Compilar recursos y arrancar los servidores
+
+Necesitarás abrir dos terminales distintas:
+
+En la primera terminal, ejecuta `php artisan serve` para iniciar el servidor backend.
+
+En la segunda terminal, ejecuta `npm run dev` para compilar los recursos del frontend.
+
+---
+
+## ✅ Acceso a la aplicación
+
+Una vez ejecutados ambos procesos, la aplicación estará disponible en:
+
+http://localhost:8000
+
+---
+
+## 🤝 Normas de Contribución
+
+Para contribuir al proyecto:
+
+1. Realiza un Fork del repositorio.
+2. Crea una nueva rama con `git checkout -b feature/NuevaMejora`.
+3. Escribe mensajes de commit claros y descriptivos.
+4. Sube los cambios y abre un Pull Request.
+
+---
+
+## 👥 Créditos y Contribuidores
+
+- Tu Nombre / Alias – Desarrollador Principal – Enlace a tu perfil
+- Nombre de tu compañero/a – Desarrollador/a – Enlace a su perfil
+
+---
+
+## 📄 Licencia
+
+Este proyecto está protegido bajo la Licencia MIT.
+
+Puedes consultar los términos completos en el archivo `LICENSE` incluido en el repositorio.
