@@ -1,4 +1,4 @@
-# 🛍️ PrintHub – Framework de Comercio Electrónico
+# Printhub
 
 ![Vista previa de la aplicación](./public/img/captura-inicio.jpg)
 
@@ -20,7 +20,7 @@ Está pensado como una base moderna y escalable para proyectos e-commerce.
 3. Instalación y Puesta en Marcha
 4. Normas de Contribución
 5. Créditos y Contribuidores
-6. Licencia
+6. Licencia 
 
 ---
 
