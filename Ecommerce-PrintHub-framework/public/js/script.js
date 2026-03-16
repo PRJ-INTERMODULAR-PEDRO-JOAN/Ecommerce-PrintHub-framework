@@ -39,8 +39,15 @@ function cargarProductos() {
              imgPath = "public/" + imgPath; 
         }
 
+        const webpPath = /\.(jpe?g|png)$/i.test(imgPath)
+            ? imgPath.replace(/\.(jpe?g|png)$/i, '.webp')
+            : imgPath;
+        const usesPicture = webpPath !== imgPath;
         card.innerHTML = `
-                  <img src="${imgPath}" alt="${producto.nom}" onerror="this.src='public/marcaDeAgua.png'">
+                  ${usesPicture
+                    ? `<picture><source srcset="${webpPath}" type="image/webp"><img src="${imgPath}" alt="${producto.nom}" loading="lazy" decoding="async" onerror="this.src='public/marcaDeAgua.png'"></picture>`
+                    : `<img src="${imgPath}" alt="${producto.nom}" loading="lazy" decoding="async" onerror="this.src='public/marcaDeAgua.png'">`
+                  }
                   <h2>${producto.nom}</h2>
                   <p class="producto-descripcion">${producto.descripcio}</p>
                   <span class="producto-precio">${producto.preu.toFixed(2)} €</span>
@@ -71,8 +78,15 @@ function cargarImpresoras() {
              imgPath = "public/" + imgPath; 
         }
 
+        const webpPathImp = /\.(jpe?g|png)$/i.test(imgPath)
+            ? imgPath.replace(/\.(jpe?g|png)$/i, '.webp')
+            : imgPath;
+        const usesPictureImp = webpPathImp !== imgPath;
         card.innerHTML = `
-                  <img src="${imgPath}" alt="${impresora.nom}" onerror="this.src='public/marcaDeAgua.png'">
+                  ${usesPictureImp
+                    ? `<picture><source srcset="${webpPathImp}" type="image/webp"><img src="${imgPath}" alt="${impresora.nom}" loading="lazy" decoding="async" onerror="this.src='public/marcaDeAgua.png'"></picture>`
+                    : `<img src="${imgPath}" alt="${impresora.nom}" loading="lazy" decoding="async" onerror="this.src='public/marcaDeAgua.png'">`
+                  }
                   <h2>${impresora.nom}</h2>
                   <p class="producto-descripcion">${impresora.descripcio}</p>
                   <span class="producto-precio">${impresora.preu.toFixed(2)} €</span>
