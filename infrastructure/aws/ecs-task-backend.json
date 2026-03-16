@@ -1,0 +1,57 @@
+{
+  "family": "printhub-backend",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/printhub-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/printhub-ecs-task-role",
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/printhub-app:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 9000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "APP_ENV",        "value": "production" },
+        { "name": "LOG_CHANNEL",    "value": "stderr" },
+        { "name": "FILESYSTEM_DISK","value": "s3" }
+      ],
+      "secrets": [
+        { "name": "APP_KEY",               "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/APP_KEY" },
+        { "name": "DB_HOST",               "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_HOST" },
+        { "name": "DB_DATABASE",           "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_DATABASE" },
+        { "name": "DB_USERNAME",           "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_USERNAME" },
+        { "name": "DB_PASSWORD",           "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:printhub/db-password" },
+        { "name": "REDIS_HOST",            "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/REDIS_HOST" },
+        { "name": "REDIS_PASSWORD",        "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:printhub/redis-password" },
+        { "name": "AWS_BUCKET",            "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/AWS_BUCKET" },
+        { "name": "AWS_DEFAULT_REGION",    "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/AWS_DEFAULT_REGION" },
+        { "name": "MAIL_HOST",             "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/MAIL_HOST" },
+        { "name": "MAIL_USERNAME",         "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/MAIL_USERNAME" },
+        { "name": "MAIL_PASSWORD",         "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:printhub/mail-password" },
+        { "name": "MAIL_FROM_ADDRESS",     "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/MAIL_FROM_ADDRESS" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group":         "/ecs/printhub-backend",
+          "awslogs-region":        "REGION",
+          "awslogs-stream-prefix": "app"
+        }
+      },
+      "healthCheck": {
+        "command": ["CMD-SHELL", "php-fpm-healthcheck || exit 1"],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 30
+      }
+    }
+  ]
+}

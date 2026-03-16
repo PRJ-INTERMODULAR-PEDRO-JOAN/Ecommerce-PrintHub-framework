@@ -1,0 +1,38 @@
+{
+  "family": "printhub-queue",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::ACCOUNT_ID:role/printhub-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::ACCOUNT_ID:role/printhub-ecs-task-role",
+  "containerDefinitions": [
+    {
+      "name": "queue",
+      "image": "ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/printhub-app:latest",
+      "essential": true,
+      "command": ["php", "artisan", "queue:work", "redis", "--sleep=3", "--tries=3", "--max-time=3600"],
+      "environment": [
+        { "name": "APP_ENV",     "value": "production" },
+        { "name": "LOG_CHANNEL", "value": "stderr" }
+      ],
+      "secrets": [
+        { "name": "APP_KEY",        "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/APP_KEY" },
+        { "name": "DB_HOST",        "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_HOST" },
+        { "name": "DB_DATABASE",    "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_DATABASE" },
+        { "name": "DB_USERNAME",    "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/DB_USERNAME" },
+        { "name": "DB_PASSWORD",    "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:printhub/db-password" },
+        { "name": "REDIS_HOST",     "valueFrom": "arn:aws:ssm:REGION:ACCOUNT_ID:parameter/printhub/REDIS_HOST" },
+        { "name": "REDIS_PASSWORD", "valueFrom": "arn:aws:secretsmanager:REGION:ACCOUNT_ID:secret:printhub/redis-password" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group":         "/ecs/printhub-queue",
+          "awslogs-region":        "REGION",
+          "awslogs-stream-prefix": "queue"
+        }
+      }
+    }
+  ]
+}
