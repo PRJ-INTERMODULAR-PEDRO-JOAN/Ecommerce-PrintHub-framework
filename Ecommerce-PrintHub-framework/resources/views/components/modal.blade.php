@@ -48,6 +48,9 @@ $maxWidth = [
     x-show="show"
     class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
     style="display: {{ $show ? 'block' : 'none' }};"
+    role="dialog"
+    aria-modal="true"
+    :aria-hidden="(!show).toString()"
 >
     <div
         x-show="show"
@@ -59,6 +62,7 @@ $maxWidth = [
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
+        aria-hidden="true"
     >
         <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
     </div>
