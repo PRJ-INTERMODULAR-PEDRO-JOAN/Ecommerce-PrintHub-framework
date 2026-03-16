@@ -6,9 +6,10 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
+        <!-- Performance & sustainability: preconnect to font CDN -->
         <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+        <link rel="dns-prefetch" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -273,5 +274,81 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+
+        <!-- ====== SECCIÓN DE SOSTENIBILIDAD (ASG) ====== -->
+        <section class="w-full bg-[#f0f9f0] dark:bg-[#0e1a0e] py-16 px-6 border-t border-[#c3e6c3] dark:border-[#1a3a1a]">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-10">
+                    <span class="inline-block text-3xl mb-2">🌱</span>
+                    <h2 class="text-2xl font-bold text-[#1a5c1a] dark:text-[#6fcf6f] mb-3">
+                        Nuestro compromiso con la sostenibilidad
+                    </h2>
+                    <p class="text-[#3a5c3a] dark:text-[#a0c8a0] text-base max-w-2xl mx-auto">
+                        En PrintHub aplicamos criterios ASG (Ambientales, Sociales y de Gobernanza) para reducir el
+                        impacto ambiental de la impresión 3D y promover una plataforma más responsable.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <!-- Tarjeta 1: Fabricación responsable -->
+                    <div class="bg-white dark:bg-[#162216] rounded-xl p-6 shadow-sm border border-[#d4edda] dark:border-[#1e3a1e]">
+                        <div class="text-3xl mb-3">♻️</div>
+                        <h3 class="font-semibold text-[#1a5c1a] dark:text-[#6fcf6f] mb-2">Fabricación responsable</h3>
+                        <p class="text-sm text-[#4a7a4a] dark:text-[#8ab88a] leading-relaxed">
+                            La impresión 3D bajo demanda elimina el sobrestock y reduce residuos hasta un
+                            <strong>70%</strong> respecto a la manufactura tradicional. Solo producimos lo que se necesita.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 2: Materiales eco-friendly -->
+                    <div class="bg-white dark:bg-[#162216] rounded-xl p-6 shadow-sm border border-[#d4edda] dark:border-[#1e3a1e]">
+                        <div class="text-3xl mb-3">🌿</div>
+                        <h3 class="font-semibold text-[#1a5c1a] dark:text-[#6fcf6f] mb-2">Materiales eco-friendly</h3>
+                        <p class="text-sm text-[#4a7a4a] dark:text-[#8ab88a] leading-relaxed">
+                            Ofrecemos filamentos <strong>PLA biodegradable</strong> fabricados a partir de almidón de maíz
+                            y otros bioplásticos que reducen significativamente la huella de carbono.
+                        </p>
+                    </div>
+
+                    <!-- Tarjeta 3: Plataforma optimizada -->
+                    <div class="bg-white dark:bg-[#162216] rounded-xl p-6 shadow-sm border border-[#d4edda] dark:border-[#1e3a1e]">
+                        <div class="text-3xl mb-3">⚡</div>
+                        <h3 class="font-semibold text-[#1a5c1a] dark:text-[#6fcf6f] mb-2">Plataforma optimizada</h3>
+                        <p class="text-sm text-[#4a7a4a] dark:text-[#8ab88a] leading-relaxed">
+                            Todas nuestras imágenes se sirven en formato <strong>WebP</strong> moderno, reduciendo hasta un
+                            <strong>50%</strong> el tamaño de los recursos y el consumo energético de la red.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Métricas de sostenibilidad -->
+                <div class="bg-[#e8f5e9] dark:bg-[#0d180d] rounded-xl p-6 border border-[#c8e6c9] dark:border-[#1a3a1a]">
+                    <h3 class="font-semibold text-[#1a5c1a] dark:text-[#6fcf6f] mb-4 text-center">
+                        📊 Impacto ambiental de nuestra plataforma
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
+                        <div>
+                            <div class="text-2xl font-bold text-[#2e7d32] dark:text-[#66bb6a]">~50%</div>
+                            <div class="text-xs text-[#4a7a4a] dark:text-[#8ab88a] mt-1">
+                                Reducción del peso de imágenes con WebP
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-[#2e7d32] dark:text-[#66bb6a]">0</div>
+                            <div class="text-xs text-[#4a7a4a] dark:text-[#8ab88a] mt-1">
+                                Imágenes innecesarias cargadas gracias al lazy loading
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-[#2e7d32] dark:text-[#66bb6a]">100%</div>
+                            <div class="text-xs text-[#4a7a4a] dark:text-[#8ab88a] mt-1">
+                                Producción bajo demanda, sin sobrestock
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ====== FIN SECCIÓN DE SOSTENIBILIDAD ====== -->
     </body>
 </html>

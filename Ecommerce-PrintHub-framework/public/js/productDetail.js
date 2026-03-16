@@ -26,9 +26,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (imgPath && !imgPath.startsWith("http") && !imgPath.startsWith("../")) {
         imgPath = "../" + imgPath;
     }
+    const webpPath = /\.(jpe?g|png)$/i.test(imgPath)
+        ? imgPath.replace(/\.(jpe?g|png)$/i, '.webp')
+        : imgPath;
+    const imgHtml = webpPath !== imgPath
+        ? `<picture><source srcset="${webpPath}" type="image/webp"><img src="${imgPath}" loading="eager" decoding="async" onerror="this.src='../public/marcaDeAgua.png'"></picture>`
+        : `<img src="${imgPath}" loading="eager" decoding="async" onerror="this.src='../public/marcaDeAgua.png'">`;
 
     contenedor.innerHTML = `
-        <div class="imagen-wrapper"><img src="${imgPath}" onerror="this.src='../public/marcaDeAgua.png'"></div>
+        <div class="imagen-wrapper">${imgHtml}</div>
         <div class="info-wrapper">
             <h1 class="info-titulo">${item.nom}</h1>
             <p class="info-precio">${parseFloat(item.preu).toFixed(2)} €</p>

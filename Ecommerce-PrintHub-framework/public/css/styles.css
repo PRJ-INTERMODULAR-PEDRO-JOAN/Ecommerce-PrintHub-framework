@@ -421,3 +421,145 @@ a.enlace-banner, a.enlace-banner:hover { text-decoration: none; color: inherit; 
     /* Video titulo más pequeño */
     .video h2 { font-size: 1.5rem; }
 }
+
+/* ================= SOSTENIBILIDAD (ASG) ================= */
+.seccion-sostenibilidad {
+  padding: 70px 0;
+  background: #f0f9f0;
+}
+
+.sostenibilidad-titulo {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sostenibilidad-titulo .icono-hoja {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.sostenibilidad-titulo h2 {
+  font-size: 2.2rem;
+  color: #2e7d32;
+  margin-bottom: 12px;
+}
+
+.sostenibilidad-titulo p {
+  font-size: 1rem;
+  color: #4a7a4a;
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+  text-transform: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+.tarjetas-sostenibilidad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.tarjeta-sostenibilidad {
+  background: #fff;
+  border: 1px solid #c8e6c9;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.tarjeta-sostenibilidad:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(46, 125, 50, 0.12);
+}
+
+.tarjeta-sostenibilidad .icono-tarjeta {
+  font-size: 2.2rem;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tarjeta-sostenibilidad h3 {
+  font-size: 1.1rem;
+  color: #1a5c1a;
+  margin-bottom: 10px;
+  text-transform: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.tarjeta-sostenibilidad p {
+  font-size: 0.9rem;
+  color: #4a7a4a;
+  line-height: 1.65;
+  text-transform: none;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+}
+
+.metricas-sostenibilidad {
+  background: #e8f5e9;
+  border: 1px solid #c8e6c9;
+  border-radius: 16px;
+  padding: 28px;
+}
+
+.metricas-sostenibilidad h3 {
+  font-size: 1.1rem;
+  color: #1a5c1a;
+  text-align: center;
+  margin-bottom: 20px;
+  text-transform: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.grid-metricas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+
+.metrica-item .valor {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2e7d32;
+  font-family: 'Roboto Mono', monospace;
+  display: block;
+}
+
+.metrica-item .etiqueta {
+  font-size: 0.82rem;
+  color: #4a7a4a;
+  margin-top: 4px;
+  display: block;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.4;
+}
+
+/* Imágenes con lazy loading — fade in once loaded */
+@keyframes fadeInLazy {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+img[loading="lazy"] {
+  animation: fadeInLazy 0.4s ease forwards;
+}
+
+/* ===== Media queries sostenibilidad ===== */
+@media (max-width: 991.98px) {
+  .tarjetas-sostenibilidad {
+    grid-template-columns: 1fr;
+  }
+  .grid-metricas {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .sostenibilidad-titulo h2 { font-size: 1.7rem; }
+}
