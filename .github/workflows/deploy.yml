@@ -1,0 +1,216 @@
+# ──────────────────────────────────────────────────────────────
+# PrintHub – CI/CD Pipeline
+#
+# Workflow:
+#   1. On every push / PR → run PHPUnit tests
+#   2. On push to main   → build Docker image, push to Amazon ECR,
+#      then SSH into the EC2 server and deploy the new image.
+#
+# Required GitHub Secrets (set in repo Settings → Secrets):
+#   AWS_ACCESS_KEY_ID       – IAM key with ECR + EC2 permissions
+#   AWS_SECRET_ACCESS_KEY   – IAM secret
+#   AWS_REGION              – e.g. eu-west-1
+#   ECR_REPOSITORY          – ECR repo name, e.g. printhub/app
+#   EC2_HOST                – Public IP or hostname of the EC2 instance
+#   EC2_USER                – SSH user on EC2, e.g. ec2-user or ubuntu
+#   EC2_SSH_KEY             – Private SSH key (contents of .pem file)
+#   DEPLOY_DIR              – Absolute path to app on EC2, e.g. /opt/printhub
+# ──────────────────────────────────────────────────────────────
+
+name: CI / CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+env:
+  PHP_VERSION: "8.2"
+
+jobs:
+  # ── 1. Test ──────────────────────────────────────────────────
+  test:
+    name: PHPUnit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    defaults:
+      run:
+        working-directory: Ecommerce-PrintHub-framework
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up PHP ${{ env.PHP_VERSION }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          extensions: mbstring, pdo_mysql, redis, zip, bcmath, gd, intl, opcache
+          coverage: none
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: Ecommerce-PrintHub-framework/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('Ecommerce-PrintHub-framework/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-scripts
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: Ecommerce-PrintHub-framework/package-lock.json
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Prepare test environment
+        run: |
+          cp .env.example .env
+          sed -i 's|DB_CONNECTION=sqlite|DB_CONNECTION=mysql|' .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing" >> .env
+          echo "DB_USERNAME=root" >> .env
+          echo "DB_PASSWORD=root" >> .env
+          php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run PHPUnit tests
+        run: php artisan test --parallel
+
+  # ── 2. Build & Push Docker image ─────────────────────────────
+  build:
+    name: Build & Push Image
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      id-token: write
+
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Extract image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.ecr-login.outputs.registry }}/${{ secrets.ECR_REPOSITORY }}
+          tags: |
+            type=sha,prefix=,format=short
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./Ecommerce-PrintHub-framework
+          file:    ./Ecommerce-PrintHub-framework/Dockerfile
+          target:  production
+          push:    true
+          tags:    ${{ steps.meta.outputs.tags }}
+          labels:  ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to:   type=gha,mode=max
+
+  # ── 3. Deploy to EC2 ─────────────────────────────────────────
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code (for compose file)
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region:            ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host:        ${{ secrets.EC2_HOST }}
+          username:    ${{ secrets.EC2_USER }}
+          key:         ${{ secrets.EC2_SSH_KEY }}
+          envs:        ECR_REGISTRY,ECR_REPOSITORY,IMAGE_TAG,AWS_REGION,DEPLOY_DIR
+          script: |
+            set -e
+            cd "${DEPLOY_DIR}"
+
+            # Authenticate Docker to ECR on the remote host
+            aws ecr get-login-password --region "${AWS_REGION}" \
+              | docker login --username AWS --password-stdin "${ECR_REGISTRY}"
+
+            # Pull the new image
+            export APP_IMAGE="${ECR_REGISTRY}/${ECR_REPOSITORY}"
+            export APP_TAG="${IMAGE_TAG}"
+            docker compose -f docker-compose.prod.yml pull app
+
+            # Rolling restart (zero-downtime as long as health checks pass)
+            docker compose -f docker-compose.prod.yml up -d --no-deps app
+
+            # Clean up dangling images
+            docker image prune -f
+        env:
+          ECR_REGISTRY:    ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY:  ${{ secrets.ECR_REPOSITORY }}
+          IMAGE_TAG:       ${{ needs.build.outputs.image_tag }}
+          AWS_REGION:      ${{ secrets.AWS_REGION }}
+          DEPLOY_DIR:      ${{ secrets.DEPLOY_DIR }}
