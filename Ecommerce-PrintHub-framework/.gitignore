@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Certbot / Let's Encrypt runtime volumes (created on the server)
+certbot_www/
+certbot_certs/
