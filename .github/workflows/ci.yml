@@ -1,0 +1,126 @@
+name: CI – Tests & Lint
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main", "develop"]
+
+jobs:
+  # ── PHP / Laravel Tests ──────────────────────────────────────────────────────
+  php-tests:
+    name: PHP Tests (PHP ${{ matrix.php }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.2", "8.3"]
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: testing
+          MYSQL_USER: testing
+          MYSQL_PASSWORD: password
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -ppassword"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, gd, intl, mbstring, opcache, pdo, pdo_mysql, pcntl, redis, zip
+          coverage: xdebug
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: Ecommerce-PrintHub-framework/vendor
+          key: composer-${{ matrix.php }}-${{ hashFiles('Ecommerce-PrintHub-framework/composer.lock') }}
+          restore-keys: composer-${{ matrix.php }}-
+
+      - name: Install PHP dependencies
+        working-directory: Ecommerce-PrintHub-framework
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Copy .env
+        working-directory: Ecommerce-PrintHub-framework
+        run: |
+          cp .env.example .env
+          sed -i 's|DB_CONNECTION=sqlite|DB_CONNECTION=mysql|' .env
+          echo "DB_HOST=127.0.0.1" >> .env
+          echo "DB_PORT=3306" >> .env
+          echo "DB_DATABASE=testing" >> .env
+          echo "DB_USERNAME=testing" >> .env
+          echo "DB_PASSWORD=password" >> .env
+          echo "REDIS_HOST=127.0.0.1" >> .env
+          echo "REDIS_PORT=6379" >> .env
+
+      - name: Generate application key
+        working-directory: Ecommerce-PrintHub-framework
+        run: php artisan key:generate
+
+      - name: Run database migrations
+        working-directory: Ecommerce-PrintHub-framework
+        run: php artisan migrate --force
+
+      - name: Run PHPUnit tests
+        working-directory: Ecommerce-PrintHub-framework
+        run: php artisan test --parallel
+
+      - name: PHP Lint (Laravel Pint)
+        working-directory: Ecommerce-PrintHub-framework
+        run: ./vendor/bin/pint --test
+
+  # ── Frontend Build ───────────────────────────────────────────────────────────
+  frontend-build:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: Ecommerce-PrintHub-framework/package-lock.json
+
+      - name: Install Node dependencies
+        working-directory: Ecommerce-PrintHub-framework
+        run: npm ci
+
+      - name: Build frontend assets
+        working-directory: Ecommerce-PrintHub-framework
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: Ecommerce-PrintHub-framework/public/build
+          retention-days: 1

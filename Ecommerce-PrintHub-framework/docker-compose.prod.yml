@@ -1,0 +1,209 @@
+# ── PrintHub — Production Docker Compose ─────────────────────────────────────
+#
+# Services:
+#   app      – PHP-FPM (Laravel backend)
+#   nginx    – Nginx reverse proxy + TLS termination (Let's Encrypt)
+#   mysql    – MySQL 8.4 database
+#   redis    – Redis for cache / queues
+#   queue    – Laravel queue worker
+#   scheduler – Laravel scheduler (cron replacement)
+#   certbot  – Certbot / Let's Encrypt certificate renewal
+#
+# Usage:
+#   1. Copy .env.example to .env and fill in all variables.
+#   2. docker compose -f docker-compose.prod.yml up -d
+#   3. For the first certificate request run:
+#      docker compose -f docker-compose.prod.yml run --rm certbot certonly \
+#        --webroot -w /var/www/certbot \
+#        -d ${APP_DOMAIN} -d www.${APP_DOMAIN} \
+#        --email ${CERTBOT_EMAIL} --agree-tos --no-eff-email
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+
+  # ── Backend: PHP-FPM ────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: production
+    image: ${REGISTRY_IMAGE:-printhub/app}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    environment:
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      APP_URL: https://${APP_DOMAIN}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CACHE_STORE: redis
+      SESSION_DRIVER: redis
+      QUEUE_CONNECTION: redis
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-tls}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-PrintHub}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-eu-west-1}
+      AWS_BUCKET: ${AWS_BUCKET}
+      FILESYSTEM_DISK: ${FILESYSTEM_DISK:-s3}
+      LOG_CHANNEL: stderr
+      LOG_LEVEL: error
+    volumes:
+      - app_storage:/var/www/html/storage/app
+    networks:
+      - backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Frontend: Nginx ─────────────────────────────────────────────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/templates/default.conf.template:ro
+      - app_public:/var/www/html/public:ro
+      - certbot_www:/var/www/certbot:ro
+      - certbot_conf:/etc/letsencrypt:ro
+    environment:
+      APP_DOMAIN: ${APP_DOMAIN}
+      NGINX_ENVSUBST_TEMPLATE_DIR: /etc/nginx/templates
+      NGINX_ENVSUBST_OUTPUT_DIR: /etc/nginx/conf.d
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      - app
+
+  # ── Database: MySQL ─────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
+      retries: 5
+      interval: 10s
+      timeout: 5s
+
+  # ── Cache / Queues: Redis ───────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      retries: 3
+      interval: 10s
+      timeout: 5s
+
+  # ── Queue worker ────────────────────────────────────────────────────────────
+  queue:
+    image: ${REGISTRY_IMAGE:-printhub/app}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    command: ["php", "artisan", "queue:work", "redis", "--sleep=3", "--tries=3", "--max-time=3600"]
+    environment:
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      QUEUE_CONNECTION: redis
+      LOG_CHANNEL: stderr
+    networks:
+      - backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ── Scheduler (replaces cron) ───────────────────────────────────────────────
+  scheduler:
+    image: ${REGISTRY_IMAGE:-printhub/app}:${IMAGE_TAG:-latest}
+    restart: unless-stopped
+    command: >
+      sh -c "while true; do php artisan schedule:run --no-interaction; sleep 60; done"
+    environment:
+      APP_ENV: production
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      QUEUE_CONNECTION: redis
+      LOG_CHANNEL: stderr
+    networks:
+      - backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ── Let's Encrypt / Certbot ─────────────────────────────────────────────────
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    # Automatic renewal every 12 h
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet;
+               sleep 43200 & wait $${!};
+             done"
+    networks:
+      - frontend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
+  app_storage:
+  app_public:
+  certbot_conf:
+  certbot_www:
