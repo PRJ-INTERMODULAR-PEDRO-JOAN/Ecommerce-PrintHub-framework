@@ -15,6 +15,9 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        <!-- Skip to main content link for keyboard users -->
+        <a href="#main-content" class="skip-link">{{ __('Skip to main content') }}</a>
+
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -28,7 +31,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main id="main-content" tabindex="-1">
                 {{ $slot }}
             </main>
         </div>

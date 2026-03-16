@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    /* Skip to main content link for keyboard navigation */
+    .skip-link {
+        @apply absolute -top-full left-0 z-50 px-4 py-2 bg-indigo-600 text-white font-semibold text-sm rounded-br-md transition-all duration-150;
+    }
+
+    .skip-link:focus {
+        @apply top-0;
+    }
+}
+
+@layer base {
+    /* Ensure focus-visible outline is always visible for keyboard users */
+    :focus-visible {
+        @apply outline outline-2 outline-offset-2 outline-indigo-500;
+    }
+}
