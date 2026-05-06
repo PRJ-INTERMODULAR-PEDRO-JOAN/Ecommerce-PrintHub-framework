@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Api\CheckoutController; 
 use App\Http\Controllers\Api\OAuthController;
+use App\Http\Controllers\Api\OrderHistoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,4 +53,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/products/{id}/like', [LikeController::class, 'toggle']);
     Route::get('/products/{id}/like', [LikeController::class, 'check']);
     Route::post('/checkout', action: [CheckoutController::class, 'store']);
+    Route::get('/user/orders', [OrderHistoryController::class, 'index']);
+
+// Lista de deseos
+    Route::get('/user/wishlist', [LikeController::class, 'userWishlist']);
 });

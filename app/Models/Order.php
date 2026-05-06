@@ -19,8 +19,7 @@ class Order extends Model
     ];
 
     // Relación: Un pedido tiene muchos items
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+    public function items() {
+    return $this->hasMany(OrderItem::class);
+}
 }

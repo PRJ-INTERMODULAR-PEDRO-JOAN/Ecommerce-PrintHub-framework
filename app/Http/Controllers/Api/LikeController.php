@@ -69,4 +69,25 @@ class LikeController extends Controller
             'likes_count' => Product::findOrFail($productId)->likes()->count()
         ]);
     }
+
+    /**
+     * Obtiene todos los productos que el usuario ha marcado como "Me gusta".
+     */
+    public function userWishlist(Request $request)
+    {
+        // Obtenemos los likes del usuario e inyectamos la relación del producto
+        $likes = \App\Models\Like::where('user_id', $request->user()->id)
+            ->with('product')
+            ->get();
+
+        // Mapeamos para devolver solo la información del producto
+        $products = $likes->map(function ($like) {
+            return $like->product;
+        })->filter(); // filter limpia en caso de que algún producto haya sido borrado
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
+        ]);
+    }
 }
