@@ -8,9 +8,21 @@ use App\Models\Like;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth; // <--- Importante
 
+/**
+ * @group Favoritos (Likes)
+ *
+ * APIs para interactuar con el sistema de 'Me gusta' de los productos.
+ */
 class LikeController extends Controller
 {
-    // Dar o quitar like
+    /**
+     * Dar o quitar Like
+     *
+     * Alterna el estado de favorito del usuario sobre un producto. Si ya tenía like, se lo quita, si no, se lo añade.
+     *
+     * @authenticated
+     * @urlParam productId int required El ID del producto al que se le da/quita like. Example: 1
+     */
     public function toggle($productId)
     {
         $user = Auth::user();
@@ -37,7 +49,14 @@ class LikeController extends Controller
         ]);
     }
 
-    // Comprobar si el usuario dio like
+    /**
+     * Comprobar Like actual
+     *
+     * Verifica si el usuario autenticado ya ha marcado este producto como favorito. Útil para cargar el botón inicial en Vue.
+     *
+     * @authenticated
+     * @urlParam productId int required El ID del producto a comprobar. Example: 1
+     */
     public function check($productId)
     {
         $user = Auth::user();

@@ -1,0 +1,164 @@
+name: 'Pedidos y Checkout'
+description: |-
+
+  APIs para procesar el carrito de compras y generar pedidos.
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - POST
+    uri: api/checkout
+    metadata:
+      custom: []
+      groupName: 'Pedidos y Checkout'
+      groupDescription: |-
+
+        APIs para procesar el carrito de compras y generar pedidos.
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Finalizar compra (Checkout)'
+      description: 'Procesa los productos del carrito, verifica si hay stock suficiente, crea el pedido y resta el stock de la base de datos.'
+      authenticated: true
+      deprecated: false
+    headers:
+      Authorization: 'Bearer {AQUÍ_PONDRÁS_TU_TOKEN}'
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      shipping_address:
+        custom: []
+        name: shipping_address
+        description: 'Dirección de envío.'
+        required: true
+        example: []
+        type: object
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      shipping_address.street:
+        custom: []
+        name: shipping_address.street
+        description: 'Calle y número.'
+        required: true
+        example: 'Calle Mayor 1'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      shipping_address.city:
+        custom: []
+        name: shipping_address.city
+        description: Ciudad.
+        required: true
+        example: Alcoy
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      shipping_address.zip:
+        custom: []
+        name: shipping_address.zip
+        description: 'Código Postal.'
+        required: true
+        example: '03801'
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      shipping_address.country:
+        custom: []
+        name: shipping_address.country
+        description: País.
+        required: true
+        example: España
+        type: string
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      items:
+        custom: []
+        name: items
+        description: 'Array con los productos a comprar.'
+        required: true
+        example:
+          - []
+        type: 'object[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      total:
+        custom: []
+        name: total
+        description: 'Precio total del pedido.'
+        required: true
+        example: 39.98
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'items[].id':
+        custom: []
+        name: 'items[].id'
+        description: 'ID del producto.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'items[].quantity':
+        custom: []
+        name: 'items[].quantity'
+        description: 'Cantidad del producto.'
+        required: true
+        example: 2
+        type: integer
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+      'items[].price':
+        custom: []
+        name: 'items[].price'
+        description: 'Precio unitario.'
+        required: true
+        example: 19.99
+        type: number
+        enumValues: []
+        exampleWasSpecified: true
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      shipping_address:
+        street: 'Calle Mayor 1'
+        city: Alcoy
+        zip: '03801'
+        country: España
+      items:
+        -
+          id: 1
+          quantity: 2
+          price: 19.99
+      total: 39.98
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth:
+      - headers
+      - Authorization
+      - 'Bearer 6g43cv8PD1aE5beadkZfhV6'
+    controller: null
+    method: null
+    route: null

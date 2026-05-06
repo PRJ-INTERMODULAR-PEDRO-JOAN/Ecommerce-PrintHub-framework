@@ -40,8 +40,10 @@ Route::put('/products/{id}', [ProductController::class, 'updateApi']);
 // --- RUTAS PROTEGIDAS POR TOKEN (RESTO) ---
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/active-sessions', [AuthController::class, 'activeSessions']);
     Route::get('/user', function (Request $request) {
         return $request->user();
+
     });
     Route::patch('/profile', [ProfileController::class, 'update']);
     Route::put('/password', [ProfileController::class, 'updatePassword']);

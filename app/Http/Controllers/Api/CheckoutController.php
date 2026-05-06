@@ -10,8 +10,30 @@ use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Pedidos y Checkout
+ *
+ * APIs para procesar el carrito de compras y generar pedidos.
+ */
 class CheckoutController extends Controller
 {
+    /**
+     * Finalizar compra (Checkout)
+     *
+     * Procesa los productos del carrito, verifica si hay stock suficiente, crea el pedido y resta el stock de la base de datos.
+     *
+     * @authenticated
+     * @bodyParam shipping_address object required Dirección de envío.
+     * @bodyParam shipping_address.street string required Calle y número. Example: Calle Mayor 1
+     * @bodyParam shipping_address.city string required Ciudad. Example: Alcoy
+     * @bodyParam shipping_address.zip string required Código Postal. Example: 03801
+     * @bodyParam shipping_address.country string required País. Example: España
+     * @bodyParam items object[] required Array con los productos a comprar.
+     * @bodyParam items[].id int required ID del producto. Example: 1
+     * @bodyParam items[].quantity int required Cantidad del producto. Example: 2
+     * @bodyParam items[].price float required Precio unitario. Example: 19.99
+     * @bodyParam total float required Precio total del pedido. Example: 39.98
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([

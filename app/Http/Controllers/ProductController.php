@@ -7,9 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * @group Productos
+ *
+ * APIs para gestionar el catálogo y detalles de productos.
+ */
 class ProductController extends Controller
 {
-    // Página principal (Welcome)
+    // Página principal (Welcome) [Ruta Web]
     public function index()
     {
         $destacados = Product::where('category', '!=', 'Impresoras')->take(4)->get();
@@ -19,7 +24,7 @@ class ProductController extends Controller
         return view('welcome', compact('destacados', 'impresoras', 'ofertaDia'));
     }
 
-    // Listado completo (Catálogo)
+    // Listado completo (Catálogo) [Ruta Web]
     public function list(Request $request)
     {
         $query = Product::query();
@@ -40,8 +45,10 @@ class ProductController extends Controller
     }
 
     /**
-     * ✅ NUEVO MÉTODO PARA LA API (Vue)
-     * Detecta si es la oferta del día y calcula el precio rebajado
+     * Obtener detalles del producto (API)
+     *
+     * Devuelve toda la información de un producto, incluyendo sus comentarios, número de likes y si tiene aplicado un descuento (Oferta del Día). Es público.
+     * * @urlParam id int required El ID del producto. Example: 1
      */
     public function showApi($id)
     {
@@ -59,12 +66,14 @@ class ProductController extends Controller
         return response()->json($product);
     }
 
+    // [Ruta Web]
     public function show($id)
     {
         $product = Product::with(['comments.user', 'likes'])->findOrFail($id);
         return view('products.show', compact('product'));
     }
 
+    // [Ruta Web]
     public function edit($id)
     {
         if (auth()->user()->role !== 'admin') {
@@ -74,6 +83,18 @@ class ProductController extends Controller
         return view('products.edit', compact('product'));
     }
 
+    /**
+     * Actualizar producto (API)
+     *
+     * Modifica los datos principales (nombre, precio, stock...) de un producto. Requiere permisos de administrador.
+     *
+     * @authenticated
+     * @urlParam id int required El ID del producto a modificar. Example: 1
+     * @bodyParam name string required El nuevo nombre. Example: Impresora 3D Elegoo Neptune
+     * @bodyParam description string required La nueva descripción del producto. Example: Impresora ultrarápida...
+     * @bodyParam price float required El nuevo precio. Example: 249.99
+     * @bodyParam stock int required Unidades en inventario. Example: 15
+     */
     public function updateApi(Request $request, $id)
     {
         $request->validate([
@@ -97,6 +118,7 @@ class ProductController extends Controller
         }
     }
 
+    // [Ruta Web]
     public function update(Request $request, $id)
     {
         if (auth()->user()->role !== 'admin') {

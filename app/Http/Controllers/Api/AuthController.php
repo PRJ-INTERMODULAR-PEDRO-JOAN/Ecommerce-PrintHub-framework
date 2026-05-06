@@ -6,11 +6,25 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules;
 
+/**
+ * @group Autenticación
+ *
+ * APIs para gestionar el registro, inicio y cierre de sesión de usuarios.
+ */
 class AuthController extends Controller
 {
-    // --- LOGIN (Solo Token, Sin Sesión Web) ---
+    /**
+     * Iniciar sesión
+     *
+     * Autentica al usuario y devuelve un token de Sanctum (Bearer Token) para usar en el resto de la API.
+     *
+     * @unauthenticated
+     * @bodyParam email string required El correo del usuario. Example: admin@printhub.com
+     * @bodyParam password string required La contraseña del usuario. Example: password
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -18,24 +32,16 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        // 1. Buscar el usuario por email
         $user = User::where('email', $request->email)->first();
 
-        // 2. Comprobar manualmente la contraseña
-        // Si el usuario no existe O la contraseña no coincide, devolvemos error.
         if (! $user || ! Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Las credenciales no coinciden.'
             ], 401);
         }
 
-        // 3. Generar el Token (Sanctum)
-        // Opcional: Borrar tokens anteriores para que solo haya 1 sesión por dispositivo
-        // $user->tokens()->delete(); 
-        
         $token = $user->createToken('authToken')->plainTextToken;
 
-        // 4. Devolver el token y el usuario (sin cookie de sesión)
         return response()->json([
             'message' => 'Login exitoso',
             'accessToken' => $token,
@@ -43,7 +49,19 @@ class AuthController extends Controller
         ]);
     }
 
-    // --- REGISTER ---
+    /**
+     * Registrar usuario
+     *
+     * Crea un nuevo usuario en la base de datos y devuelve su token.
+     *
+     * @unauthenticated
+     * @bodyParam name string required El nombre. Example: Pedro
+     * @bodyParam surname string Los apellidos. Example: García
+     * @bodyParam phone string El teléfono. Example: 600123456
+     * @bodyParam email string required El correo. Example: pedro@printhub.com
+     * @bodyParam password string required Contraseña (mín 8 chars). Example: secreto123
+     * @bodyParam password_confirmation string required Confirmación de la contraseña. Example: secreto123
+     */
     public function register(Request $request)
     {
         $request->validate([
@@ -71,19 +89,52 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // --- LOGOUT ---
+    /**
+     * Cerrar sesión
+     *
+     * Revoca el token actual del usuario y cierra la sesión web. 
+     * @authenticated
+     */
     public function logout(Request $request)
-{
-    // 1. Revocar el token de Sanctum (API)
-    if ($request->user()) {
-        $request->user()->currentAccessToken()->delete();
+    {
+        // 1. Revocar el token de la API (Sanctum)
+        if ($request->user()) {
+            $request->user()->currentAccessToken()->delete();
+        }
+
+        // 2. Comprobar si hay una sesión web activa antes de intentar borrarla
+        if ($request->hasSession()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
+
+        return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
 
-    // 2. Forzar el cierre de la guardia web y limpiar la sesión/cookie
-    Auth::guard('web')->logout();
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+    /**
+     * Listar sesiones (tokens) activas
+     *
+     * Obtiene una lista de todos los tokens de acceso que este usuario tiene activos. 
+     * Cada token representa un inicio de sesión en un dispositivo o navegador diferente.
+     *
+     * @authenticated
+     */
+    public function activeSessions(Request $request)
+    {
+        // FÍJATE EN ESTA LÍNEA: Añadimos "use ($request)"
+        $sessions = $request->user()->tokens->map(function ($token) use ($request) {
+            return [
+                'id' => $token->id,
+                'nombre_dispositivo' => $token->name,
+                'ultima_vez_usado' => $token->last_used_at ? $token->last_used_at->diffForHumans() : 'Nunca usado',
+                'creado_el' => $token->created_at->format('d/m/Y H:i'),
+                'es_sesion_actual' => $token->id === $request->user()->currentAccessToken()->id,
+            ];
+        });
 
-    return response()->json(['message' => 'Sesión cerrada en API y Web']);
-}
+        return response()->json([
+            'sesiones_activas' => $sessions
+        ]);
+    }
 }

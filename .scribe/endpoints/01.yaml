@@ -1,0 +1,366 @@
+name: Endpoints
+description: ''
+endpoints:
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/oauth/google/redirect
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Redirigeix a Google'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 302
+        content: |-
+          <!DOCTYPE html>
+          <html>
+              <head>
+                  <meta charset="UTF-8" />
+                  <meta http-equiv="refresh" content="0;url='https://accounts.google.com/o/oauth2/auth?client_id=1081466206035-67k4i9cssso1mb7pmprua90gh0d3hfvl.apps.googleusercontent.com&amp;redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fapi%2Foauth%2Fgoogle%2Fcallback&amp;scope=openid+profile+email&amp;response_type=code'" />
+
+                  <title>Redirecting to https://accounts.google.com/o/oauth2/auth?client_id=1081466206035-67k4i9cssso1mb7pmprua90gh0d3hfvl.apps.googleusercontent.com&amp;redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fapi%2Foauth%2Fgoogle%2Fcallback&amp;scope=openid+profile+email&amp;response_type=code</title>
+              </head>
+              <body>
+                  Redirecting to <a href="https://accounts.google.com/o/oauth2/auth?client_id=1081466206035-67k4i9cssso1mb7pmprua90gh0d3hfvl.apps.googleusercontent.com&amp;redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fapi%2Foauth%2Fgoogle%2Fcallback&amp;scope=openid+profile+email&amp;response_type=code">https://accounts.google.com/o/oauth2/auth?client_id=1081466206035-67k4i9cssso1mb7pmprua90gh0d3hfvl.apps.googleusercontent.com&amp;redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fapi%2Foauth%2Fgoogle%2Fcallback&amp;scope=openid+profile+email&amp;response_type=code</a>.
+              </body>
+          </html>
+        headers:
+          cache-control: 'no-cache, private'
+          location: 'https://accounts.google.com/o/oauth2/auth?client_id=1081466206035-67k4i9cssso1mb7pmprua90gh0d3hfvl.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%3A80%2Fapi%2Foauth%2Fgoogle%2Fcallback&scope=openid+profile+email&response_type=code'
+          content-type: 'text/html; charset=utf-8'
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/oauth/google/callback
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: "Rep la resposta de Google, crea/busca l'usuari i retorna el token a Vue"
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 302
+        content: |-
+          <!DOCTYPE html>
+          <html>
+              <head>
+                  <meta charset="UTF-8" />
+                  <meta http-equiv="refresh" content="0;url='http://localhost:5174/login?error=oauth_failed'" />
+
+                  <title>Redirecting to http://localhost:5174/login?error=oauth_failed</title>
+              </head>
+              <body>
+                  Redirecting to <a href="http://localhost:5174/login?error=oauth_failed">http://localhost:5174/login?error=oauth_failed</a>.
+              </body>
+          </html>
+        headers:
+          cache-control: 'no-cache, private'
+          location: 'http://localhost:5174/login?error=oauth_failed'
+          content-type: 'text/html; charset=utf-8'
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/products
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 200
+        content: '[{"id":1,"sku":"IMP-ENDER3","name":"Impresora Ender 3","description":"La impresora 3D m\u00e1s confiable para principiantes. Alta precisi\u00f3n y f\u00e1cil montaje.","price":"179.99","stock":9,"image":"ender.jpg","category":"Impresoras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T07:24:06.000000Z"},{"id":2,"sku":"FIL-BAMBU","name":"Filamento Bambu Lab","description":"Bobina de PLA original.","price":"24.99","stock":50,"image":"bambu.jpg","category":"Impresoras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":3,"sku":"IMP-PRUSA","name":"Prusa MK4","description":"Original Prusa MK4. La referencia en impresi\u00f3n 3D profesional de escritorio.","price":"899.00","stock":3,"image":"prusa.jpg","category":"Impresoras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":4,"sku":"IMP-ELEGO","name":"Elegoo Saturn 3","description":"Impresora 3D de resina 12k con alta resoluci\u00f3n y detalles precisos.","price":"399.00","stock":7,"image":"elego.jpg","category":"Impresoras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":5,"sku":"FIG-LAMBO","name":"Lamborghini Aventador","description":"Maqueta detallada a escala 1:18 impresa en resina de alta calidad.","price":"45.00","stock":2,"image":"lambo_2.jpg","category":"Coches","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":6,"sku":"FIG-LINK","name":"Figura Link (Zelda)","description":"Figura pintada a mano de Link con la Espada Maestra.","price":"35.00","stock":5,"image":"FiguraLink.jpg","category":"Figuras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":7,"sku":"FIG-AATROX","name":"Figura Aatrox","description":"Figura detallada de Aatrox, La Espada de los Oscuros.","price":"45.00","stock":2,"image":"aatrox.jpg","category":"Figuras","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"},{"id":8,"sku":"MAQ-SAGRADA","name":"Maqueta Sagrada Familia","description":"R\u00e9plica arquitect\u00f3nica impresa en resina de alta definici\u00f3n.","price":"120.00","stock":1,"image":"Maqueta_Sagrada_Familia.jpg","category":"Maquetas","created_at":"2026-05-06T06:26:18.000000Z","updated_at":"2026-05-06T06:26:18.000000Z"}]'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - GET
+    uri: api/user
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        custom: []
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: '*'
+        description: null
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PATCH
+    uri: api/profile
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Actualizar información del perfil (Nombre, Email, Teléfono).'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      name:
+        custom: []
+        name: name
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      surname:
+        custom: []
+        name: surname
+        description: 'Must not be greater than 255 characters.'
+        required: false
+        example: 'n'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      phone:
+        custom: []
+        name: phone
+        description: 'Must not be greater than 20 characters.'
+        required: false
+        example: gzmiyvdljnikhway
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        deprecated: false
+      email:
+        custom: []
+        name: email
+        description: 'Must be a valid email address. Must not be greater than 255 characters.'
+        required: true
+        example: gilbert32@example.com
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      name: b
+      surname: 'n'
+      phone: gzmiyvdljnikhway
+      email: gilbert32@example.com
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - PUT
+    uri: api/password
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Actualizar la contraseña.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      current_password:
+        custom: []
+        name: current_password
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+      password:
+        custom: []
+        name: password
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      current_password: architecto
+      password: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+  -
+    custom: []
+    httpMethods:
+      - DELETE
+    uri: api/profile
+    metadata:
+      custom: []
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Eliminar la cuenta del usuario.'
+      description: ''
+      authenticated: false
+      deprecated: false
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      password:
+        custom: []
+        name: password
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        deprecated: false
+    cleanBodyParameters:
+      password: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
