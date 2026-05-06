@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',    // Si usas roles
         'address', // Si tienes dirección
+        'google_id', // Si usas autenticación con Google
     ];
 
     protected $hidden = [

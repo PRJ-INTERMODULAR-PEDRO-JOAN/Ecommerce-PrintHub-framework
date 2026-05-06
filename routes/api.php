@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CommentController;
 use App\Http\Controllers\Api\LikeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\Api\CheckoutController; 
+use App\Http\Controllers\Api\OAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,10 @@ use App\Http\Controllers\Api\CheckoutController;
 // --- RUTAS PÚBLICAS ---
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
+
+// NOVES RUTES OAUTH GOOGLE
+Route::get('/oauth/google/redirect', [OAuthController::class, 'redirectToGoogle']);
+Route::get('/oauth/google/callback', [OAuthController::class, 'handleGoogleCallback']);
 
 Route::get('/products', function () {
     return Product::all();

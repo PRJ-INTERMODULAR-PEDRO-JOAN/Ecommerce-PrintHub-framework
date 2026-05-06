@@ -11,12 +11,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('surname')->nullable(); // Tu campo 'cognoms'
+            $table->string('surname')->nullable();
             $table->string('email')->unique();
-            $table->string('phone')->nullable();   // Tu campo 'telefon'
-            $table->string('role')->default('user'); // Tu campo 'rol'
+            $table->string('phone')->nullable();
+            $table->string('role')->default('user');
+            $table->string('google_id')->nullable()->unique(); // NOU CAMP
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('password')->nullable(); // MODIFICAT: Ara és nullable
             $table->rememberToken();
             $table->timestamps();
         });
