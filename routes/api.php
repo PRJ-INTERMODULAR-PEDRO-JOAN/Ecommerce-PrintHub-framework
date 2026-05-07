@@ -46,6 +46,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         return $request->user();
 
     });
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy']);    
     Route::patch('/profile', [ProfileController::class, 'update']);
     Route::put('/password', [ProfileController::class, 'updatePassword']);
     Route::delete('/profile', [ProfileController::class, 'destroy']);
