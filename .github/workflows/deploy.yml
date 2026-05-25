@@ -3,7 +3,7 @@ name: Backend Deploy CI/CD
 on:
   push:
     branches:
-      - main # Cambia esto si tu rama principal se llama 'master'
+      - Sprint-Final
 
 jobs:
   test:
@@ -16,8 +16,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2" # Ajusta a la versión de PHP que uses
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo
+          php-version: "8.5"
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo, zip
 
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
@@ -38,7 +38,7 @@ jobs:
     name: Deploy to Server
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/Sprint-Final'
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.0
@@ -49,22 +49,11 @@ jobs:
           script: |
             cd /var/www/backend
 
-            # Modo mantenimiento
             php artisan down || true
-
-            # Descargar código nuevo
-            git pull origin main
-
-            # Instalar dependencias limpias
+            git pull origin Sprint-Final
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
-
-            # Ejecución obligatoria de migraciones
             php artisan migrate --force
-
-            # Limpiar y cachear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-
-            # Quitar modo mantenimiento
             php artisan up
