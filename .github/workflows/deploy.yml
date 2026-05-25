@@ -1,0 +1,70 @@
+name: Backend Deploy CI/CD
+
+on:
+  push:
+    branches:
+      - main # Cambia esto si tu rama principal se llama 'master'
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2" # Ajusta a la versión de PHP que uses
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      - name: Prepare Environment for Testing
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          touch database/database.sqlite
+
+      - name: Run Tests
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: php artisan test
+
+  deploy:
+    name: Deploy to Server
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /var/www/backend
+
+            # Modo mantenimiento
+            php artisan down || true
+
+            # Descargar código nuevo
+            git pull origin main
+
+            # Instalar dependencias limpias
+            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+
+            # Ejecución obligatoria de migraciones
+            php artisan migrate --force
+
+            # Limpiar y cachear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+
+            # Quitar modo mantenimiento
+            php artisan up
