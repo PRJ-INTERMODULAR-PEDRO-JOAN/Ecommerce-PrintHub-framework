@@ -6,7 +6,7 @@
         
         <div class="text-center mb-4">
             <img src="{{ asset('img/logoPrintHub.jpeg') }}" alt="Logo" class="rounded-circle mb-2" width="60" height="60">
-            <h4 class="fw-bold text-dark mb-1">Bienvenido Pedro</h4>
+            <h4 class="fw-bold text-dark mb-1">Bienvenido</h4>
             <p class="text-muted small">Inicia sesión para continuar</p>
         </div>
 
