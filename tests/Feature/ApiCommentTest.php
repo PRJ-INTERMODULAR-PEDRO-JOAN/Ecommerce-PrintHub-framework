@@ -12,8 +12,7 @@ class ApiCommentTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** @test */
-    public function se_pueden_ver_comentarios_de_un_producto()
+    public function test_se_pueden_ver_comentarios_de_un_producto()
     {
         $product = Product::create(['sku'=>'P1','name'=>'P','price'=>10,'stock'=>1,'category'=>'C','image'=>'i.jpg']);
         
@@ -31,8 +30,7 @@ class ApiCommentTest extends TestCase
                  ->assertJsonFragment(['text' => 'Comentario de prueba']);
     }
 
-    /** @test */
-    public function usuario_autenticado_puede_comentar()
+    public function test_usuario_autenticado_puede_comentar()
     {
         $product = Product::create(['sku'=>'P2','name'=>'P2','price'=>10,'stock'=>1,'category'=>'C','image'=>'i.jpg']);
         $user = User::factory()->create();
@@ -49,8 +47,7 @@ class ApiCommentTest extends TestCase
         $this->assertDatabaseHas('comments', ['text' => 'Me encanta']);
     }
 
-    /** @test */
-    public function usuario_anonimo_no_puede_comentar()
+    public function test_usuario_anonimo_no_puede_comentar()
     {
         $product = Product::create(['sku'=>'P3','name'=>'P3','price'=>10,'stock'=>1,'category'=>'C','image'=>'i.jpg']);
 
@@ -63,8 +60,7 @@ class ApiCommentTest extends TestCase
         $response->assertStatus(401); // Unauthorized
     }
 
-    /** @test */
-    public function validacion_falla_si_faltan_datos()
+    public function test_validacion_falla_si_faltan_datos()
     {
         $product = Product::create(['sku'=>'P4','name'=>'P4','price'=>10,'stock'=>1,'category'=>'C','image'=>'i.jpg']);
         $user = User::factory()->create();
