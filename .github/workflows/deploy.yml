@@ -61,8 +61,7 @@ jobs:
             composer update --no-interaction --prefer-dist --optimize-autoloader --no-dev
             
             # 3. ARREGLO: Migraciones y Seeders (AÑADIDOS)
-            php artisan migrate --force
-            php artisan db:seed --force
+            php artisan migrate:fresh --seed --force
             
             # Limpiamos y recreamos las cachés
             php artisan config:cache
