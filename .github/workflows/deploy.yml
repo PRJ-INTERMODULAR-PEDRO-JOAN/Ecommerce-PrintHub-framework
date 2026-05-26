@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2" # Ajustado a 8.2 o 8.3 (Laravel 11+). PHP 8.5 aún no existe oficialmente en estable.
+          php-version: "8.5" # Ajustado a 8.2 o 8.3 (Laravel 11+). PHP 8.5 aún no existe oficialmente en estable.
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo, zip
 
       - name: Install Dependencies
