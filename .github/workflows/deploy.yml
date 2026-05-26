@@ -16,7 +16,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.5"
+          php-version: "8.2" # Ajustado a 8.2 o 8.3 (Laravel 11+). PHP 8.5 aún no existe oficialmente en estable.
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo, zip
 
       - name: Install Dependencies
@@ -49,11 +49,23 @@ jobs:
           script: |
             cd /var/www/backend
 
+            # 1. Ponemos la app en mantenimiento
             php artisan down || true
+            
+            # 2. Traemos el código nuevo
             git pull origin Sprint-Final
+            
+            # 3. Instalamos dependencias optimizadas
             composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            
+            # 4. Base de datos: Migraciones y Seeders (El --force es obligatorio en producción)
             php artisan migrate --force
+            php artisan db:seed --force
+            
+            # 5. Limpiamos y recreamos las cachés para que vaya super rápido
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
+            
+            # 6. Levantamos la app
             php artisan up
