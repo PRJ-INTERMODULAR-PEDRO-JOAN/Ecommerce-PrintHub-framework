@@ -16,11 +16,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: "8.2" # Ajustado a 8.2 o 8.3 (Laravel 11+). PHP 8.5 aún no existe oficialmente en estable.
+          # 1. ARREGLO: Versión de PHP corregida
+          php-version: "8.2" 
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, json, libxml, pdo, zip
 
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        # 2. ARREGLO: Cambiado a 'update' para evitar el fallo del composer.lock
+        run: composer update -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Prepare Environment for Testing
         run: |
@@ -49,23 +51,23 @@ jobs:
           script: |
             cd /var/www/backend
 
-            # 1. Ponemos la app en mantenimiento
+            # Ponemos la app en mantenimiento
             php artisan down || true
             
-            # 2. Traemos el código nuevo
+            # Traemos el código nuevo
             git pull origin Sprint-Final
             
-            # 3. Instalamos dependencias optimizadas
-            composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
+            # 2. ARREGLO: Cambiado a 'update' en producción también
+            composer update --no-interaction --prefer-dist --optimize-autoloader --no-dev
             
-            # 4. Base de datos: Migraciones y Seeders (El --force es obligatorio en producción)
+            # 3. ARREGLO: Migraciones y Seeders (AÑADIDOS)
             php artisan migrate --force
             php artisan db:seed --force
             
-            # 5. Limpiamos y recreamos las cachés para que vaya super rápido
+            # Limpiamos y recreamos las cachés
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
             
-            # 6. Levantamos la app
+            # Levantamos la app
             php artisan up
