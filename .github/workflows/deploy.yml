@@ -57,13 +57,31 @@ jobs:
             # Traemos el código nuevo
             git pull origin Sprint-Final
             
+            # --- NUEVO: CORRECCIÓN AUTOMÁTICA DE DOMINIOS ---
+            echo "Reemplazando localhost por los dominios reales (HTTPS)..."
+            
+            # 1. Forzamos las variables correctas en el archivo .env del servidor
+            sed -i 's|APP_URL=.*|APP_URL=https://api.projecte01.ddaw.es|g' .env
+            sed -i 's|FRONTEND_URL=.*|FRONTEND_URL=https://www.projecte01.ddaw.es|g' .env
+            sed -i 's|^SANCTUM_STATEFUL_DOMAINS=.*|SANCTUM_STATEFUL_DOMAINS=www.projecte01.ddaw.es,projecte01.ddaw.es|g' .env
+            sed -i 's|^SESSION_DOMAIN=.*|SESSION_DOMAIN=.projecte01.ddaw.es|g' .env
+            sed -i 's|^GOOGLE_REDIRECT_URI=.*|GOOGLE_REDIRECT_URI=https://api.projecte01.ddaw.es/api/oauth/google/callback|g' .env
+            
+            # 2. Buscar y reemplazar 'localhost:5174' por el dominio del Frontend en el código fuente
+            find app/ config/ routes/ database/ resources/ -type f -name "*.php" -exec sed -i 's|http://localhost:5174|https://www.projecte01.ddaw.es|g' {} +
+            find app/ config/ routes/ database/ resources/ -type f -name "*.php" -exec sed -i 's|localhost:5174|www.projecte01.ddaw.es|g' {} +
+            
+            # 3. Buscar y reemplazar 'http://localhost' por el dominio de la API en el código fuente
+            find app/ config/ routes/ database/ resources/ -type f -name "*.php" -exec sed -i 's|http://localhost|https://api.projecte01.ddaw.es|g' {} +
+            # ------------------------------------------------
+
             # 2. ARREGLO: Cambiado a 'update' en producción también
             composer update --no-interaction --prefer-dist --optimize-autoloader --no-dev
             
             # 3. ARREGLO: Migraciones y Seeders (AÑADIDOS)
             php artisan migrate:fresh --seed --force
             
-            # Limpiamos y recreamos las cachés
+            # Limpiamos y recreamos las cachés (MUY IMPORTANTE tras cambiar el .env y el código)
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
