@@ -1,147 +1,244 @@
-# Printhub
+# ⚙️ PrintHub - Backend API (Laravel)
 
-![Vista previa de la aplicación](./public/img/captura-inicio.jpg)
-
----
-
-## 📖 Descripción
-
-**PrintHub** es un framework de comercio electrónico desarrollado con Laravel y Vue.js.  
-Ofrece una solución integral para la gestión de productos, carrito de compra, perfiles de usuario y un panel de administración para la gestión del inventario.
-
-Está pensado como una base moderna y escalable para proyectos e-commerce.
+Este repositorio contiene el Backend del proyecto e-commerce **PrintHub**. Proporciona una API RESTful desarrollada con Laravel 11. Este documento detalla la arquitectura, infraestructura, configuración y despliegue del sistema.
 
 ---
 
-## 📑 Tabla de Contenidos
+# 🌍 1. Arquitectura Global AWS y DNS
 
-1. Recursos y Tecnologías Utilizadas
-2. Requisitos Previos
-3. Instalación y Puesta en Marcha
-4. Normas de Contribución
-5. Créditos y Contribuidores
-6. Licencia 
+La plataforma utiliza una arquitectura distribuida y escalable sobre Amazon Web Services (AWS).
+
+## Arquitectura AWS
+
+### 1. Red (VPC)
+
+El sistema se despliega dentro de una VPC personalizada:
+
+- **Subredes Públicas**
+    - Application Load Balancer
+    - Acceso a Internet
+
+- **Subredes Privadas de Aplicación**
+    - Instancias EC2 con Laravel
+    - Acceso saliente mediante NAT Gateway
+
+- **Subredes Privadas de Datos**
+    - AWS RDS
+    - Sin acceso público
 
 ---
 
-## 🛠 Recursos y Tecnologías Utilizadas
+### 2. Seguridad y HTTPS
 
-**Backend**
+- Application Load Balancer (ALB)
+- HTTPS mediante Let's Encrypt
+- Comunicación cifrada extremo a extremo
 
-- PHP 8.2
+---
+
+### 3. Aplicación
+
 - Laravel 11
-
-**Frontend**
-
-- Vue.js
-- HTML5
-- CSS3
-- Bootstrap 5
-
-**Base de Datos**
-
-- MySQL
-- MariaDB
-
-**Gestores de Dependencias**
-
-- Composer (PHP)
-- NPM (Node.js)
+- Arquitectura stateless
+- Preparada para Auto Scaling
 
 ---
 
-## ⚙️ Requisitos Previos
+### 4. Base de Datos
 
-Antes de comenzar, asegúrate de tener instalado en tu equipo:
-
-- Servidor local (XAMPP, Laragon o similar)
-- PHP >= 8.2
-- Composer
-- Node.js y npm
-- Git
+- AWS RDS MySQL/MariaDB
+- Multi-AZ
+- Backups automáticos
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha
+### 5. Security Groups
 
-Sigue estos pasos en orden para desplegar la aplicación en tu entorno local:
+#### ALB
 
-### 1️⃣ Clonar el repositorio
+- HTTP → 80
+- HTTPS → 443
 
-Abre una terminal en la carpeta de tu servidor web y ejecuta el comando `git clone https://ruta-a-tu-repositorio.git` y luego accede al directorio con `cd ecommerce-printhub-framework`.
+#### EC2 App
 
----
+- Solo tráfico proveniente del ALB
 
-### 2️⃣ Instalar dependencias de PHP
+#### Base de Datos
 
-Ejecuta el comando `composer install` para descargar todas las dependencias del backend.
-
----
-
-### 3️⃣ Configurar las variables de entorno
-
-Crea el archivo de configuración ejecutando `cp .env.example .env`.
-
-Después, abre el archivo `.env` y configura los datos de tu base de datos en las variables `DB_DATABASE`, `DB_USERNAME` y `DB_PASSWORD`.
+- Puerto 3306 únicamente desde la aplicación
 
 ---
 
-### 4️⃣ Generar la clave de la aplicación
-
-Ejecuta el comando `php artisan key:generate` para crear la clave de seguridad de la aplicación.
-
----
-
-### 5️⃣ Ejecutar migraciones y seeders
-
-Ejecuta `php artisan migrate --seed` para crear las tablas en la base de datos y cargar los datos iniciales de prueba.
+> 📸 **[CAPTURA 1: ARQUITECTURA AWS]**
+>
+> `![Arquitectura AWS](docs/captura-aws.png)`
 
 ---
 
-### 6️⃣ Instalar dependencias del frontend
+# 🌐 2. Dominio y DNS
 
-Ejecuta `npm install` para descargar las dependencias necesarias del frontend.
+## Dominio principal
 
----
+```txt
+projecteXX.ddaw.es
+```
 
-### 7️⃣ Compilar recursos y arrancar los servidores
-
-Necesitarás abrir dos terminales distintas:
-
-En la primera terminal, ejecuta `php artisan serve` para iniciar el servidor backend.
-
-En la segunda terminal, ejecuta `npm run dev` para compilar los recursos del frontend.
+Los registros DNS (`A` o `CNAME`) apuntan al balanceador AWS.
 
 ---
 
-## ✅ Acceso a la aplicación
-
-Una vez ejecutados ambos procesos, la aplicación estará disponible en:
-
-http://localhost:8000
+> 📸 **[CAPTURA 2: DNS Y HTTPS]**
+>
+> `![DNS HTTPS](docs/captura-dns.png)`
 
 ---
 
-## 🤝 Normas de Contribución
+# 🏗️ 3. Tecnologías Backend
 
-Para contribuir al proyecto:
-
-1. Realiza un Fork del repositorio.
-2. Crea una nueva rama con `git checkout -b feature/NuevaMejora`.
-3. Escribe mensajes de commit claros y descriptivos.
-4. Sube los cambios y abre un Pull Request.
-
----
-
-## 👥 Créditos y Contribuidores
-
-- Tu Nombre / Alias – Desarrollador Principal – Enlace a tu perfil
-- Nombre de tu compañero/a – Desarrollador/a – Enlace a su perfil
+- Laravel 11
+- PHP 8.2+
+- MySQL 8.x
+- Laravel Sanctum
+- API RESTful
+- Arquitectura MVC
 
 ---
 
-## 📄 Licencia
+# 🐳 4. Desarrollo Local con Docker
 
-Este proyecto está protegido bajo la Licencia MIT.
+## Requisitos
 
-Puedes consultar los términos completos en el archivo `LICENSE` incluido en el repositorio.
+- Docker
+- Docker Compose
+
+---
+
+## Instalación
+
+### Clonar repositorio
+
+```bash
+git clone <repo-backend>
+```
+
+---
+
+### Variables de entorno
+
+```bash
+cp .env.example .env
+```
+
+---
+
+### Configuración base de datos
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql_db
+DB_PORT=3306
+DB_DATABASE=printhub_db
+DB_USERNAME=root
+DB_PASSWORD=secret
+```
+
+---
+
+### Levantar contenedores
+
+```bash
+docker-compose up -d --build
+```
+
+---
+
+### Preparar Laravel
+
+```bash
+docker-compose exec app composer install
+docker-compose exec app php artisan key:generate
+docker-compose exec app php artisan migrate --seed
+```
+
+---
+
+> 📸 **[CAPTURA 3: DOCKER BACKEND]**
+>
+> `![Docker Backend](docs/docker-backend.png)`
+
+---
+
+# 🚀 5. CI/CD Backend
+
+## Fases Pipeline
+
+### Instalación dependencias
+
+```bash
+composer install
+```
+
+---
+
+### Testing
+
+```bash
+php artisan test
+```
+
+Si falla, el despliegue se cancela automáticamente.
+
+---
+
+### Deploy automático
+
+Despliegue mediante:
+
+- SSH
+- AWS CodeDeploy
+- Deployer
+
+---
+
+### Migraciones automáticas
+
+```bash
+php artisan migrate --force
+```
+
+---
+
+# 👥 6. Normas de Contribución
+
+## GitFlow
+
+- `main` → producción
+- `feature/*` → desarrollo
+
+---
+
+## Pull Requests
+
+- Prohibido push directo a `main`
+- Revisión obligatoria
+- Validación CI/CD automática
+
+---
+
+# 👤 7. Usuarios de Prueba
+
+## Administrador
+
+```txt
+admin@printhub.com
+password
+```
+
+---
+
+## Cliente
+
+```txt
+client@printhub.com
+password
+```
