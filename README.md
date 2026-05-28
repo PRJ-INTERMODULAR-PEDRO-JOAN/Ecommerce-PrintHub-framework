@@ -1,137 +1,252 @@
 # ⚙️ PrintHub - Backend API (Laravel)
 
-Este repositorio contiene el Backend del proyecto e-commerce **PrintHub**. Proporciona una API RESTful desarrollada con Laravel 11. Este documento detalla la arquitectura, infraestructura, configuración y despliegue del sistema.
+# 📖 Descripción General
+
+Este repositorio contiene el backend del proyecto e-commerce **PrintHub**, desplegado bajo el dominio oficial:
+
+```txt
+api.projecte01.ddaw.es
+```
+
+La aplicación proporciona una API RESTful desarrollada con Laravel 11 y preparada para ejecutarse en entornos cloud escalables utilizando AWS, Docker y CI/CD automatizado.
+
+El sistema gestiona:
+
+- Usuarios
+- Autenticación
+- Productos
+- Pedidos
+- Carrito de compra
+- Administración
 
 ---
 
-# 🌍 1. Arquitectura Global AWS y DNS
-
-La plataforma utiliza una arquitectura distribuida y escalable sobre Amazon Web Services (AWS).
-
-## Arquitectura AWS
-
-### 1. Red (VPC)
-
-El sistema se despliega dentro de una VPC personalizada:
-
-- **Subredes Públicas**
-    - Application Load Balancer
-    - Acceso a Internet
-
-- **Subredes Privadas de Aplicación**
-    - Instancias EC2 con Laravel
-    - Acceso saliente mediante NAT Gateway
-
-- **Subredes Privadas de Datos**
-    - AWS RDS
-    - Sin acceso público
-
----
-
-### 2. Seguridad y HTTPS
-
-- Application Load Balancer (ALB)
-- HTTPS mediante Let's Encrypt
-- Comunicación cifrada extremo a extremo
-
----
-
-### 3. Aplicación
-
-- Laravel 11
-- Arquitectura stateless
-- Preparada para Auto Scaling
-
----
-
-### 4. Base de Datos
-
-- AWS RDS MySQL/MariaDB
-- Multi-AZ
-- Backups automáticos
-
----
-
-### 5. Security Groups
-
-#### ALB
-
-- HTTP → 80
-- HTTPS → 443
-
-#### EC2 App
-
-- Solo tráfico proveniente del ALB
-
-#### Base de Datos
-
-- Puerto 3306 únicamente desde la aplicación
-
----
-
-> 📸 **[CAPTURA 1: ARQUITECTURA AWS]**
->
-> `![Arquitectura AWS](docs/captura-aws.png)`
-
----
-
-# 🌐 2. Dominio y DNS
+# 🌐 1. DNS DEL PROYECTO
 
 ## Dominio principal
 
 ```txt
-projecteXX.ddaw.es
+projecte01.ddaw.es
 ```
 
-Los registros DNS (`A` o `CNAME`) apuntan al balanceador AWS.
+---
+
+## Subdominios configurados
+
+| Servicio    | Dominio                |
+| ----------- | ---------------------- |
+| Frontend    | projecte01.ddaw.es     |
+| Backend API | api.projecte01.ddaw.es |
 
 ---
 
-> 📸 **[CAPTURA 2: DNS Y HTTPS]**
+## Configuración DNS
+
+Se utiliza una zona DNS delegada donde se han configurado:
+
+| Tipo  | Nombre                                                  | Destino        |
+| ----- | ------------------------------------------------------- | -------------- |
+| A     | projecte01.ddaw.es                                      | IP pública AWS |
+| CNAME | api.projecte01.ddaw.es                                  | Backend EC2    |
+| CNAME | [www.projecte01.ddaw.es](http://www.projecte01.ddaw.es) | Frontend       |
+
+---
+
+## Delegación DNS
+
+La delegación incluye:
+
+- Registros NS
+- Configuración zona
+- Nameservers
+
+---
+
+> 📸 **CAPTURA DNS**
 >
-> `![DNS HTTPS](docs/captura-dns.png)`
+> `![DNS](docs/dns-config.png)`
 
 ---
 
-# 🏗️ 3. Tecnologías Backend
+# ☁️ 2. ARQUITECTURA AWS
+
+# Objetivo
+
+Diseñar una arquitectura segura, desacoplada y escalable.
+
+---
+
+# 🧱 Infraestructura
+
+## VPC propia
+
+| Configuración    | Valor       |
+| ---------------- | ----------- |
+| CIDR             | 10.0.0.0/16 |
+| AZs              | 2           |
+| NAT Gateway      | Sí          |
+| Internet Gateway | Sí          |
+
+---
+
+## Subredes Públicas
+
+Utilizadas para:
+
+- Application Load Balancer
+- HTTPS
+- Entrada tráfico
+
+Ejemplo:
+
+```txt
+10.0.1.0/24
+10.0.2.0/24
+```
+
+---
+
+## Subredes Privadas Aplicación
+
+Utilizadas para:
+
+- EC2 Laravel
+- Contenedores backend
+
+Ejemplo:
+
+```txt
+10.0.10.0/24
+10.0.11.0/24
+```
+
+---
+
+## Subredes Privadas Datos
+
+Utilizadas para:
+
+- AWS RDS
+
+Ejemplo:
+
+```txt
+10.0.20.0/24
+10.0.21.0/24
+```
+
+---
+
+# 🌍 3. CAPA EDGE Y HTTPS
+
+## Punto único entrada
+
+La infraestructura utiliza:
+
+- Application Load Balancer (ALB)
+
+Funciones:
+
+- Terminación HTTPS
+- Balanceo tráfico
+- Redirección HTTP → HTTPS
+- Reenvío backend
+
+---
+
+## HTTPS
+
+Certificados válidos mediante:
+
+```txt
+Let's Encrypt
+```
+
+---
+
+# ⚙️ 4. CAPA APLICACIÓN
+
+## Backend Laravel
+
+Tecnologías:
 
 - Laravel 11
-- PHP 8.2+
-- MySQL 8.x
-- Laravel Sanctum
-- API RESTful
-- Arquitectura MVC
-
----
-
-# 🐳 4. Desarrollo Local con Docker
-
-## Requisitos
-
+- PHP 8.2
+- Sanctum
+- MySQL
 - Docker
-- Docker Compose
 
 ---
 
-## Instalación
+## Escalabilidad
 
-### Clonar repositorio
+La arquitectura permite:
 
-```bash
-git clone <repo-backend>
-```
-
----
-
-### Variables de entorno
-
-```bash
-cp .env.example .env
-```
+- Replicación horizontal
+- Auto Scaling
+- Balanceo carga
 
 ---
 
-### Configuración base de datos
+# 🗄️ 5. CAPA DATOS
+
+## AWS RDS
+
+| Característica   | Estado |
+| ---------------- | ------ |
+| Multi-AZ         | ✅     |
+| Backups          | ✅     |
+| Réplicas lectura | ✅     |
+| Acceso público   | ❌     |
+
+---
+
+# 🔐 6. SEGURIDAD
+
+## Security Groups
+
+### ALB
+
+| Puerto | Acceso  |
+| ------ | ------- |
+| 80     | Público |
+| 443    | Público |
+
+---
+
+### Backend
+
+| Puerto    | Acceso   |
+| --------- | -------- |
+| 80 / 8000 | Solo ALB |
+
+---
+
+### Base datos
+
+| Puerto | Acceso       |
+| ------ | ------------ |
+| 3306   | Solo Backend |
+
+---
+
+# 🐳 7. DESARROLLO LOCAL CON DOCKER
+
+## Objetivo
+
+Permitir ejecutar el backend sin instalar PHP o MySQL localmente.
+
+---
+
+## Servicios Docker
+
+- app
+- nginx
+- mysql
+
+---
+
+## Variables entorno
 
 ```env
 DB_CONNECTION=mysql
@@ -144,7 +259,7 @@ DB_PASSWORD=secret
 
 ---
 
-### Levantar contenedores
+## Levantar entorno
 
 ```bash
 docker-compose up -d --build
@@ -152,7 +267,7 @@ docker-compose up -d --build
 
 ---
 
-### Preparar Laravel
+## Preparar Laravel
 
 ```bash
 docker-compose exec app composer install
@@ -162,17 +277,29 @@ docker-compose exec app php artisan migrate --seed
 
 ---
 
-> 📸 **[CAPTURA 3: DOCKER BACKEND]**
+## Persistencia
+
+La base de datos utiliza volúmenes Docker persistentes.
+
+---
+
+> 📸 **CAPTURA DOCKER BACKEND**
 >
 > `![Docker Backend](docs/docker-backend.png)`
 
 ---
 
-# 🚀 5. CI/CD Backend
+# 🚀 8. CI/CD BACKEND
 
-## Fases Pipeline
+# Objetivo
 
-### Instalación dependencias
+Automatizar completamente el despliegue desde Git hasta producción.
+
+---
+
+# Pipeline
+
+## 1. Instalación dependencias
 
 ```bash
 composer install
@@ -180,27 +307,70 @@ composer install
 
 ---
 
-### Testing
+## 2. Testing automático
 
 ```bash
 php artisan test
 ```
 
-Si falla, el despliegue se cancela automáticamente.
-
 ---
 
-### Deploy automático
+## 3. Deploy automático
 
-Despliegue mediante:
+El despliegue se realiza automáticamente hacia AWS mediante:
 
+- GitHub Actions
 - SSH
-- AWS CodeDeploy
 - Deployer
 
 ---
 
-### Migraciones automáticas
+## Usuario deployer
+
+Para los despliegues automáticos se utiliza el usuario:
+
+```txt
+deployer
+```
+
+---
+
+## Funciones del usuario deployer
+
+- Lanzar deploys automáticos
+- Ejecutar Deployer
+- Gestionar releases
+- Ejecutar migraciones
+- Acceso SSH seguro
+
+---
+
+## Seguridad usuario deployer
+
+- Sin permisos root
+- SSH mediante claves
+- Acceso limitado
+- Usuario exclusivo CI/CD
+
+---
+
+## Flujo despliegue
+
+```txt
+GitHub Actions → SSH → deployer → Deployer → Producción
+```
+
+---
+
+## Comando deploy
+
+```bash
+dep deploy production
+```
+
+---
+
+## Migraciones automáticas
 
 ```bash
 php artisan migrate --force
@@ -208,24 +378,57 @@ php artisan migrate --force
 
 ---
 
-# 👥 6. Normas de Contribución
+## Estructura releases
+
+```txt
+/var/www/printhub
+├── current
+├── releases
+├── shared
+└── .dep
+```
+
+---
+
+# 🔄 9. INTEGRACIÓN CONTINUADA
+
+## Flujo completo
+
+```txt
+Commit → Push → Pipeline → Test → Build → Deploy → Migraciones → Producción
+```
+
+---
+
+# 👥 10. NORMAS CONTRIBUCIÓN
 
 ## GitFlow
 
-- `main` → producción
-- `feature/*` → desarrollo
+| Rama       | Uso             |
+| ---------- | --------------- |
+| main       | Producción      |
+| develop    | Integración     |
+| feature/\* | Funcionalidades |
 
 ---
 
-## Pull Requests
+## Revisión código
 
-- Prohibido push directo a `main`
-- Revisión obligatoria
-- Validación CI/CD automática
+- Pull Requests obligatorios
+- Validación automática
+- Revisión equipo
 
 ---
 
-# 👤 7. Usuarios de Prueba
+## Code Style
+
+- PSR-12
+- Código documentado
+- Buenas prácticas Laravel
+
+---
+
+# 👤 11. USUARIOS PRUEBA
 
 ## Administrador
 
@@ -242,3 +445,28 @@ password
 client@printhub.com
 password
 ```
+
+---
+
+# 📜 12. LICENCIA
+
+Proyecto desarrollado con fines educativos para el módulo DDAW + NUV.
+
+---
+
+# 👨‍💻 13. EQUIPO DESARROLLO
+
+Proyecto desarrollado por el equipo PrintHub.
+
+---
+
+# 📌 14. ESTADO PROYECTO
+
+| Característica | Estado |
+| -------------- | ------ |
+| API REST       | ✅     |
+| Docker         | ✅     |
+| AWS            | ✅     |
+| HTTPS          | ✅     |
+| CI/CD          | ✅     |
+| Auto Deploy    | ✅     |
