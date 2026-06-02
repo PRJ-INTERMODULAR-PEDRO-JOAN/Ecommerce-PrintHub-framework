@@ -16,6 +16,7 @@ class Product extends Model
         'stock',
         'image',
         'category',
+        'is_second_hand', // <-- NUEVO CAMPO AÑADIDO
         'sku',
         'rating',
         'reviews_count'
@@ -32,7 +33,7 @@ class Product extends Model
         return $this->hasMany(Like::class);
     }
 
-    // --- NUEVA FUNCIÓN: OFERTA FLASH DEL DÍA ---
+    // --- FUNCIÓN: OFERTA FLASH DEL DÍA ---
     public static function getDailyDeal()
     {
         // 1. Solo productos con stock

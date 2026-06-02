@@ -26,9 +26,15 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/oauth/google/redirect', [OAuthController::class, 'redirectToGoogle']);
 Route::get('/oauth/google/callback', [OAuthController::class, 'handleGoogleCallback']);
 
+// --- RUTA DEL CATÁLOGO PRINCIPAL (SOLO PRODUCTOS NUEVOS) ---
 Route::get('/products', function () {
-    return Product::all();
+    // Filtramos para que solo devuelva los que tienen is_second_hand en false (0)
+    return Product::where('is_second_hand', false)->get();
 });
+
+// --- RUTA DE SEGUNDA MANO ---
+Route::get('/products/second-hand', [ProductController::class, 'secondHand']);
+
 // Usamos el controlador para el detalle
 Route::get('/products/{id}', [ProductController::class, 'showApi']);
 Route::get('/products/{id}/comments', [CommentController::class, 'index']);

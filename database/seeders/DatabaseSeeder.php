@@ -32,5 +32,7 @@ class DatabaseSeeder extends Seeder
 
         // 3. Cargamos los productos (Lambo, impresoras, etc.)
         $this->call(ProductSeeder::class);
+        // 4. Cargamos los productos de segunda mano
+        $this->call(SecondHandProductSeeder::class);
     }
 }

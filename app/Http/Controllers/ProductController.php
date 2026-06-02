@@ -145,4 +145,12 @@ class ProductController extends Controller
         $product->update($data);
         return redirect()->route('products.show', $product->id)->with('success', 'Producto actualizado correctamente');
     }
+
+    // --- NUEVA FUNCIÓN PARA OBTENER PRODUCTOS DE SEGUNDA MANO ---
+    public function secondHand()
+    {
+        // Obtiene todos los productos que tengan is_second_hand en true (1)
+        $products = Product::where('is_second_hand', true)->get();
+        return response()->json($products);
+    }
 }
