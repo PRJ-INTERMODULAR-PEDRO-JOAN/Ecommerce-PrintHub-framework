@@ -30,9 +30,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'), // Contraseña segura
         ]);
 
-        // 3. Cargamos los productos (Lambo, impresoras, etc.)
-        $this->call(ProductSeeder::class);
-        // 4. Cargamos los productos de segunda mano
-        $this->call(SecondHandProductSeeder::class);
-    }
+        $this->call([
+            ProductSeeder::class,
+            SecondHandProductSeeder::class, // <-- AÑADIDO AQUÍ
+        ]);    }
 }
