@@ -17,7 +17,7 @@ class ProductSeeder extends Seeder
             'price' => 179.99,
             'stock' => 10,
             'category' => 'Impresoras',
-            'image' => 'ender.jpg'
+            'image' => 'ender.webp'
         ]);
 
         Product::create([
@@ -27,7 +27,7 @@ class ProductSeeder extends Seeder
             'price' => 24.99,
             'stock' => 50,
             'category' => 'Impresoras',
-            'image' => 'bambu.jpg'
+            'image' => 'bambu.webp'
         ]);
 
         Product::create([
@@ -37,7 +37,7 @@ class ProductSeeder extends Seeder
             'price' => 899.00,
             'stock' => 3,
             'category' => 'Impresoras',
-            'image' => 'prusa.jpg'
+            'image' => 'prusa.webp'
         ]);
 
         Product::create([
@@ -47,7 +47,7 @@ class ProductSeeder extends Seeder
             'price' => 399.00,
             'stock' => 7,
             'category' => 'Impresoras',
-            'image' => 'elego.jpg'
+            'image' => 'elego.webp'
         ]);
 
         // 3. DESTACADOS (Figuras, Maquetas, Coches...)
@@ -58,7 +58,7 @@ class ProductSeeder extends Seeder
             'price' => 45.00,
             'stock' => 2,
             'category' => 'Coches',
-            'image' => 'lambo_2.jpg' // Tu imagen del Lambo
+            'image' => 'lambo_2.webp' // Tu imagen del Lambo
         ]);
 
         Product::create([
@@ -68,7 +68,7 @@ class ProductSeeder extends Seeder
             'price' => 35.00,
             'stock' => 5,
             'category' => 'Figuras',
-            'image' => 'FiguraLink.jpg'
+            'image' => 'FiguraLink.webp'
         ]);
 
         Product::create([
@@ -78,7 +78,7 @@ class ProductSeeder extends Seeder
             'price' => 45.00,
             'stock' => 2,
             'category' => 'Figuras',
-            'image' => 'aatrox.jpg'
+            'image' => 'aatrox.webp'
         ]);
 
         Product::create([
@@ -88,7 +88,7 @@ class ProductSeeder extends Seeder
             'price' => 120.00,
             'stock' => 1,
             'category' => 'Maquetas',
-            'image' => 'Maqueta_Sagrada_Familia.jpg'
+            'image' => 'Maqueta_Sagrada_Familia.webp'
         ]);
         
         
